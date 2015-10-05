@@ -32,6 +32,17 @@ class Module extends FCompound {
     
   }
   
+  void attachTo(Ship ship) {
+    FBox a = new FBox(dimensions.x*0.75, dimensions.y);
+    FBox b = new FBox(dimensions.x, dimensions.y*0.75);
+    a.setPosition(getX(), getY());
+    a.setRotation(getRotation());
+    b.setPosition(getX(), getY());
+    b.setRotation(getRotation());
+    ship.addBody(a);
+    ship.addBody(b);
+  }
+  
   void drawAnchors() {
     for (PVector a : anchors) {
       PVector pos = new PVector(a.x, a.y);

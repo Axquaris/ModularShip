@@ -73,7 +73,7 @@ void draw() {
     for (int i = 0; i < playerAnchors.size(); i++) {
       for (int j = 0; j < grabbedAnchors.size(); j++) {
         PVector distance = PVector.sub(playerAnchors.get(i), grabbedAnchors.get(j));
-        if (distance.mag() < closestPairDist) {
+        if (distance.mag() < closestPairDist && !player.anchorUsed[i]) {
           closestPairDist = distance.mag();
           a = i;
           b = j;
@@ -81,7 +81,7 @@ void draw() {
       }
     }
     
-    if ( closestPairDist < 40) {
+    if (closestPairDist < 40) {
       line( playerAnchors.get(a).x, playerAnchors.get(a).y, 
            grabbedAnchors.get(b).x, grabbedAnchors.get(b).y );
       lastConnectable = new PVector(a, b);
@@ -164,7 +164,7 @@ FCompound createBullet() {
   
   bullet.setGrabbable(false);
   bullet.setBullet(true);
-  bullet.setDensity(.25);
+  bullet.setDensity(.1);
   bullet.setDamping(0);
   bullet.setAngularDamping(0);
   
