@@ -64,6 +64,17 @@ class Ship extends FCompound {
     return null;
   }
   
+  void addModule(Module newMod, PVector connectors) {
+    FBox a = new FBox(40*0.75, 40);
+    FBox b = new FBox(40, 40*0.75);
+    a.setPosition(anchors.get((int)lastConnectable.x).x*2,
+                  player.anchors.get((int)lastConnectable.x).y*2);
+    b.setPosition(anchors.get((int)lastConnectable.x).x*2,
+                  player.anchors.get((int)lastConnectable.x).y*2);
+    addBody(a);
+    addBody(b);
+  }
+  
   void drawAnchors() {
     for (PVector a : anchors) {
       PVector pos = new PVector(a.x, a.y);

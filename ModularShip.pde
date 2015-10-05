@@ -103,14 +103,16 @@ void mouseReleased() {
   if (showAnchors) {
     showAnchors = false;
     
-    //Link
-    FDistanceJoint link = new FDistanceJoint(player, grabbedMod);
-    link.setLength(0);
-    link.setAnchor1(player.anchors.get((int)lastConnectable.x).x,
-                    player.anchors.get((int)lastConnectable.x).y);
-    link.setAnchor2(grabbedMod.anchors.get((int)lastConnectable.y).x,
-                    grabbedMod.anchors.get((int)lastConnectable.y).y);
-    world.add(link);
+    if (lastConnectable != null) {
+      
+      //PVector position = 
+      world.remove(player);
+      world.remove(grabbedMod);
+      
+      player.addModule(grabbedMod, lastConnectable);
+      
+      world.add(player);
+    }
   }
 }
 

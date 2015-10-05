@@ -1,15 +1,19 @@
 
 
 class Module extends FCompound {
+  PVector dimensions;
   ArrayList<PVector> anchors;
   
   Module () {
     super();
     
+    //Set Dimensions
+    dimensions = new PVector(40, 40);
+    
     //Create Core
-    FBox a = new FBox(20, 40);
+    FBox a = new FBox(dimensions.x*0.75, dimensions.y);
     addBody(a);
-    FBox b = new FBox(40 ,20);
+    FBox b = new FBox(dimensions.x, dimensions.y*0.75);
     addBody(b);
     
     //Set Properties
