@@ -1,45 +1,13 @@
 
-class Ship extends FCompound {
-  PVector dimensions;
-  ArrayList<PVector> anchors;
-  boolean[] anchorUsed;
+class Ship extends Module {
   ArrayList<Module> modules;
-  
   int gunCooldown;
   
   Ship () {
     super();
     
-    //Create Core
-    FPoly core = new FPoly();
-    core.vertex(-20, -20);
-    core.vertex(-20, 10);
-    core.vertex(-10, 20);
-    core.vertex(10, 20);
-    core.vertex(20, 10);
-    core.vertex(20, -20);
-    core.setFillColor(color(#000000));
-    addBody(core);
-    
-    //Set Properties
-    dimensions = new PVector(40, 40);
-    setBullet(true);
-    setDamping(0);
-    setAngularDamping(0);
-    setDensity(1);
-    setRotation(radians(180)); //Rotate Properly
-    
-    //Make Anchors
-    anchors = new ArrayList<PVector>();
-    anchors.add(new PVector(0, 20));
-    anchors.add(new PVector(20, 0));
-    anchors.add(new PVector(0, -20));
-    anchors.add(new PVector(-20, 0));
+    //Setup Vars
     modules = new ArrayList<Module>();
-    anchorUsed = new boolean[4];
-    for (int c = 0; c < anchorUsed.length; c++) anchorUsed[c] = false;
-    
-    //
     gunCooldown = 0;
   }
   
@@ -48,7 +16,7 @@ class Ship extends FCompound {
   }
   
   FCompound fire() {
-    if (gunCooldown == 0) {
+    if (gunCooldown == 0 && !anchorUsed[0]) {
       PVector vel = new PVector(0, 1);
       vel.setMag(20);
       vel.rotate(getRotation());
@@ -73,40 +41,61 @@ class Ship extends FCompound {
   
   void addModule(Module newMod, PVector connectors) {
     PVector anchor1 = anchors.get((int)connectors.x); //Ship anchor
-    PVector anchor2 = newMod.anchors.get((int)connectors.y); //NewMod anchor
+    //PVector anchor2 = newMod.anchors.get((int)connectors.y); //NewMod anchor
     PVector newModPosition = PVector.mult(anchor1, 2);
     int newModRotation = 0;
     
-    if (connectors.x % 2 != connectors.y % 2) newModRotation = 90;
+    if (connectors.x % 2 != connectors.y % 2) newModRotation += 90;
+    else if (connectors.x == connectors.y) newModRotation += 180;
+    /*if ((connectors.x == 0 && connectors.y == 3) ||
+        (connectors.x == 1 && connectors.y == 0) ||
+        (connectors.x == 2 && connectors.y == 1) ||
+        (connectors.x == 3 && connectors.y == 2)
+    ) newModRotation += 90;*/
       
     newMod.setPosition(newModPosition.x, newModPosition.y);
     newMod.setRotation(radians(newModRotation));
     newMod.attachTo(this);
     
-    modules.add(newMod);
     anchorUsed[(int)connectors.x] = true;
+    newMod.anchorUsed[(int)connectors.y] = true;
+    modules.add(newMod);
   }
   
   void drawAnchors() {
-    for (int c = 0; c < anchors.size(); c++) {
-      if (!anchorUsed[c]) {
-        PVector pos = new PVector(anchors.get(c).x, anchors.get(c).y);
-        pos.rotate(getRotation());
-        ellipse(pos.x+getX(), pos.y+getY(), 5, 5);
-      }
+    super.drawAnchors();
+    for (Module m: modules) {
+      m.drawAnchors(getX(), getY(), getRotation());
     }
   }
   
   ArrayList<PVector> getAnchors() {
-    ArrayList<PVector> anchorPos = new ArrayList<PVector>();
-    
-    for (PVector a : anchors) {
-      PVector b = new PVector(a.x, a.y);
-      b.rotate(getRotation());
-      b.add(getX(), getY());
-      anchorPos.add(b);
+    ArrayList<PVector> anchorPos = super.getAnchors();
+    for (Module m: modules) {
+      for (PVector p: m.getAnchors()) {
+        anchorPos.add(p);
+      }
     }
     
     return anchorPos;
+  }
+  
+  boolean anchorUsed(int c) {
+    if (c/4 == 0)
+      return anchorUsed[c];
+    else
+      return modules.get(c/4 - 1).anchorUsed(c % 4);
+  }
+  
+  void createBody(FCompound target) {
+    FPoly core = new FPoly();
+    core.vertex(-20, -20);
+    core.vertex(-20, 10);
+    core.vertex(-10, 20);
+    core.vertex(10, 20);
+    core.vertex(20, 10);
+    core.vertex(20, -20);
+    core.setFillColor(color(#000000));
+    target.addBody(core);
   }
 }

@@ -45,12 +45,12 @@ void draw() {
   
   PVector f = new PVector(0, 0);
   float r = 0;
-  if (keys[0]) f.y += 2000;
-  if (keys[1]) r += -30;
-  if (keys[2]) f.y += -800;
-  if (keys[3]) r += 30;
-  if (keys[4]) f.x += 800;
-  if (keys[5]) f.x += -800;
+  if (keys[0]) f.y += 3000;
+  if (keys[1]) r += -70;
+  if (keys[2]) f.y += -1000;
+  if (keys[3]) r += 70;
+  if (keys[4]) f.x += 1000;
+  if (keys[5]) f.x += -1000;
   f.rotate(player.getRotation());
   player.addForce(f.x, f.y);
   player.addTorque(r);
@@ -73,7 +73,9 @@ void draw() {
     for (int i = 0; i < playerAnchors.size(); i++) {
       for (int j = 0; j < grabbedAnchors.size(); j++) {
         PVector distance = PVector.sub(playerAnchors.get(i), grabbedAnchors.get(j));
-        if (distance.mag() < closestPairDist && !player.anchorUsed[i]) {
+        if (distance.mag() < closestPairDist && 
+            !player.anchorUsed(i)
+            && !grabbedMod.anchorUsed(j)) {
           closestPairDist = distance.mag();
           a = i;
           b = j;
@@ -86,6 +88,9 @@ void draw() {
            grabbedAnchors.get(b).x, grabbedAnchors.get(b).y );
       lastConnectable = new PVector(a, b);
     }
+    else
+      lastConnectable = null;
+      
     player.drawAnchors();
     grabbedMod.drawAnchors();
   }
@@ -93,7 +98,7 @@ void draw() {
 
 void mousePressed() {
   FBody b = world.getBody(mouseX, mouseY);
-  if ((b instanceof Module)) {
+  if ((b instanceof Module) && !(b instanceof Ship)) {
     grabbedMod = (Module)b;
     showAnchors = true;
   }
@@ -104,14 +109,22 @@ void mouseReleased() {
     showAnchors = false;
     
     if (lastConnectable != null) {
+      PVector oldPos = new PVector(player.getX(), player.getY());
+      float oldRot = player.getRotation();
+      PVector oldVel = new PVector(player.getVelocityX(), player.getVelocityY());
+      float oldAngVel = player.getAngularVelocity();
       
-      //PVector position = 
       world.remove(player);
       world.remove(grabbedMod);
       
       player.addModule(grabbedMod, lastConnectable);
       
       world.add(player);
+      
+      player.setPosition(oldPos.x, oldPos.y);
+      player.setRotation(oldRot);
+      player.setVelocity(oldVel.x, oldVel.y);
+      player.setAngularVelocity(oldAngVel);
     }
   }
 }

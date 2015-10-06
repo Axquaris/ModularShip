@@ -3,25 +3,21 @@
 class Module extends FCompound {
   PVector dimensions;
   ArrayList<PVector> anchors;
+  boolean[] anchorUsed;
   
   Module () {
     super();
     
-    //Set Dimensions
-    dimensions = new PVector(40, 40);
-    
-    //Create Core
-    FBox a = new FBox(dimensions.x*0.75, dimensions.y);
-    addBody(a);
-    FBox b = new FBox(dimensions.x, dimensions.y*0.75);
-    addBody(b);
-    
     //Set Properties
+    dimensions = new PVector(40, 40);
     setBullet(true);
     setDamping(0);
     setAngularDamping(0);
     setDensity(0.1);
     setRotation(radians(180)); //Rotate Properly
+    
+    //Create Body
+    createBody(this);
     
     //Make Anchors
     anchors = new ArrayList<PVector>();
@@ -29,7 +25,8 @@ class Module extends FCompound {
     anchors.add(new PVector(20, 0));
     anchors.add(new PVector(0, -20));
     anchors.add(new PVector(-20, 0));
-    
+    anchorUsed = new boolean[4];
+    for (int c = 0; c < anchorUsed.length; c++) anchorUsed[c] = false;
   }
   
   void attachTo(Ship ship) {
@@ -44,10 +41,24 @@ class Module extends FCompound {
   }
   
   void drawAnchors() {
-    for (PVector a : anchors) {
-      PVector pos = new PVector(a.x, a.y);
-      pos.rotate(getRotation());
-      ellipse(pos.x+getX(), pos.y+getY(), 5, 5);
+    for (int c = 0; c < anchors.size(); c++) {
+      if (!anchorUsed[c]) {
+        PVector pos = new PVector(anchors.get(c).x, anchors.get(c).y);
+        pos.rotate(getRotation());
+        ellipse(pos.x+getX(), pos.y+getY(), 5, 5);
+      }
+    }
+  }
+  
+  void drawAnchors(float x, float y, float r) {
+    for (int c = 0; c < anchors.size(); c++) {
+      if (!anchorUsed[c]) {
+        PVector pos = new PVector(getX(), getY());
+        pos.rotate(r);
+        PVector pos2 = new PVector(anchors.get(c).x, anchors.get(c).y);
+        pos2.rotate(r+getRotation());
+        ellipse(pos2.x+pos.x+x, pos2.y+pos.y+y, 5, 5);
+      }
     }
   }
   
@@ -62,5 +73,16 @@ class Module extends FCompound {
     }
     
     return anchorPos;
+  }
+  
+  boolean anchorUsed(int c) {
+    return anchorUsed[c];
+  }
+  
+  void createBody(FCompound target) {
+    FBox a = new FBox(dimensions.x*0.75, dimensions.y);
+    target.addBody(a);
+    FBox b = new FBox(dimensions.x, dimensions.y*0.75);
+    target.addBody(b);
   }
 }
