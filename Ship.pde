@@ -40,32 +40,39 @@ class Ship extends Module {
   }
   
   void addModule(Module newMod, PVector connectors) {
-    PVector anchor1 = anchors.get((int)connectors.x); //Ship anchor
-    //PVector anchor2 = newMod.anchors.get((int)connectors.y); //NewMod anchor
-    PVector newModPosition = PVector.mult(anchor1, 2);
-    int newModRotation = 0;
+    PVector newModPosition;
+    if ((int)connectors.x <= 3)
+      newModPosition = PVector.mult(anchors.get((int)connectors.x), 2);
+    else { //Attach module to module
+      newModPosition = PVector.sub(modules.get((int)(connectors.x)/4-1).anchors.get((int)(connectors.x)%4), 
+                                   newMod.anchors.get((int)connectors.y));
+      newModPosition.add(new PVector(modules.get((int)(connectors.x)/4-1).getX(), 
+                                     modules.get((int)(connectors.x)/4-1).getY()));
+    }
     
+    int newModRotation = 0;
     if (connectors.x % 2 != connectors.y % 2) newModRotation += 90;
-    else if (connectors.x == connectors.y) newModRotation += 180;
-    /*if ((connectors.x == 0 && connectors.y == 3) ||
-        (connectors.x == 1 && connectors.y == 0) ||
-        (connectors.x == 2 && connectors.y == 1) ||
-        (connectors.x == 3 && connectors.y == 2)
-    ) newModRotation += 90;*/
-      
+    
     newMod.setPosition(newModPosition.x, newModPosition.y);
     newMod.setRotation(radians(newModRotation));
     newMod.attachTo(this);
     
-    anchorUsed[(int)connectors.x] = true;
+    setAnchorUsed((int)connectors.x, true);
     newMod.anchorUsed[(int)connectors.y] = true;
     modules.add(newMod);
   }
   
   void drawAnchors() {
-    super.drawAnchors();
-    for (Module m: modules) {
-      m.drawAnchors(getX(), getY(), getRotation());
+    ArrayList<PVector> a = getAnchors();
+    for (int c = 0; c < a.size(); c++) {
+      //if (!anchorUsed(c)) { Gave up trying to hide used anchors
+        //if (c > 3) {
+        //  a.get(c).rotate(getRotation());
+        //  ellipse(getX()+a.get(c).x, getY()+a.get(c).y, 5, 5);
+        //}
+        //else 
+          ellipse(a.get(c).x, a.get(c).y, 5, 5);
+      //}
     }
   }
   
@@ -73,7 +80,9 @@ class Ship extends Module {
     ArrayList<PVector> anchorPos = super.getAnchors();
     for (Module m: modules) {
       for (PVector p: m.getAnchors()) {
-        anchorPos.add(p);
+        PVector pos = p;
+        pos.rotate(getRotation());
+        anchorPos.add(PVector.add(pos, new PVector(getX(), getY())));
       }
     }
     
@@ -87,7 +96,14 @@ class Ship extends Module {
       return modules.get(c/4 - 1).anchorUsed(c % 4);
   }
   
-  void createBody(FCompound target) {
+  void setAnchorUsed(int c, boolean b) {
+    if (c/4 == 0)
+      anchorUsed[c] = b;
+    else
+      modules.get(c/4 - 1).anchorUsed[c % 4] = b;
+  }
+  
+  void createBody() {
     FPoly core = new FPoly();
     core.vertex(-20, -20);
     core.vertex(-20, 10);
@@ -96,6 +112,6 @@ class Ship extends Module {
     core.vertex(20, 10);
     core.vertex(20, -20);
     core.setFillColor(color(#000000));
-    target.addBody(core);
+    addBody(core);
   }
 }

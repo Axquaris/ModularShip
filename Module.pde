@@ -17,7 +17,7 @@ class Module extends FCompound {
     setRotation(radians(180)); //Rotate Properly
     
     //Create Body
-    createBody(this);
+    createBody();
     
     //Make Anchors
     anchors = new ArrayList<PVector>();
@@ -50,28 +50,14 @@ class Module extends FCompound {
     }
   }
   
-  void drawAnchors(float x, float y, float r) {
-    for (int c = 0; c < anchors.size(); c++) {
-      if (!anchorUsed[c]) {
-        PVector pos = new PVector(getX(), getY());
-        pos.rotate(r);
-        PVector pos2 = new PVector(anchors.get(c).x, anchors.get(c).y);
-        pos2.rotate(r+getRotation());
-        ellipse(pos2.x+pos.x+x, pos2.y+pos.y+y, 5, 5);
-      }
-    }
-  }
-  
   ArrayList<PVector> getAnchors() {
     ArrayList<PVector> anchorPos = new ArrayList<PVector>();
-    
     for (PVector a : anchors) {
       PVector b = new PVector(a.x, a.y);
       b.rotate(getRotation());
       b.add(getX(), getY());
       anchorPos.add(b);
     }
-    
     return anchorPos;
   }
   
@@ -79,10 +65,10 @@ class Module extends FCompound {
     return anchorUsed[c];
   }
   
-  void createBody(FCompound target) {
+  void createBody() {
     FBox a = new FBox(dimensions.x*0.75, dimensions.y);
-    target.addBody(a);
+    addBody(a);
     FBox b = new FBox(dimensions.x, dimensions.y*0.75);
-    target.addBody(b);
+    addBody(b);
   }
 }
