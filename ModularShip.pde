@@ -61,7 +61,7 @@ void draw() {
   
   world.step();
   player.update();
-  world.draw(this);
+  world.drawDebug(this);
   
   if (showAnchors) {
     ArrayList<PVector> grabbedAnchors = grabbedMod.getAnchors();

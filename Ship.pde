@@ -44,8 +44,7 @@ class Ship extends Module {
     if ((int)connectors.x <= 3)
       newModPosition = PVector.mult(anchors.get((int)connectors.x), 2);
     else { //Attach module to module
-      newModPosition = PVector.sub(modules.get((int)(connectors.x)/4-1).anchors.get((int)(connectors.x)%4), 
-                                   newMod.anchors.get((int)connectors.y));
+      newModPosition = PVector.mult(modules.get((int)(connectors.x)/4-1).anchors.get((int)(connectors.x)%4), 2);
       newModPosition.add(new PVector(modules.get((int)(connectors.x)/4-1).getX(), 
                                      modules.get((int)(connectors.x)/4-1).getY()));
     }
