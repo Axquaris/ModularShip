@@ -19,7 +19,7 @@ class Ship extends Module {
   }
   
   FCompound fire() {
-    if (gunCooldown == 0) {
+    if (gunCooldown == 0 && !grid.positionUsed(0, 1)) {
       PVector vel = new PVector(0, 1);
       vel.setMag(20);
       vel.rotate(getRotation());

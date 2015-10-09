@@ -73,7 +73,6 @@ void draw() {
       pos.sub(grabbedMod.getX(), grabbedMod.getY());
       if (pos.mag() < 20) {
         newModPos = new PVector(p.x, p.y);
-        System.out.println("V");
         break;
       }
     }
@@ -102,8 +101,8 @@ void mouseReleased() {
       PVector oldVel = new PVector(player.getVelocityX(), player.getVelocityY());
       float oldAngVel = player.getAngularVelocity();
       
-      world.remove(player);
       world.remove(grabbedMod);
+      world.remove(player);
       
       player.addModule(grabbedMod, newModPos);
       
