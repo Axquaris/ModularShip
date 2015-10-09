@@ -3,12 +3,15 @@ class Ship extends Module {
   ArrayList<Module> modules;
   int gunCooldown;
   
+  GridSystem grid;
+  
   Ship () {
     super();
     
     //Setup Vars
     modules = new ArrayList<Module>();
     gunCooldown = 0;
+    grid = new GridSystem(this);
   }
   
   void update() {
@@ -16,7 +19,7 @@ class Ship extends Module {
   }
   
   FCompound fire() {
-    if (gunCooldown == 0 && !anchorUsed[0]) {
+    if (gunCooldown == 0 && !grid.positionUsed(0, 1)) {
       PVector vel = new PVector(0, 1);
       vel.setMag(20);
       vel.rotate(getRotation());
@@ -39,67 +42,24 @@ class Ship extends Module {
     return null;
   }
   
-  void addModule(Module newMod, PVector connectors) {
-    PVector newModPosition;
-    if ((int)connectors.x <= 3)
-      newModPosition = PVector.mult(anchors.get((int)connectors.x), 2);
-    else { //Attach module to module
-      newModPosition = PVector.mult(modules.get((int)(connectors.x)/4-1).anchors.get((int)(connectors.x)%4), 2);
-      newModPosition.add(new PVector(modules.get((int)(connectors.x)/4-1).getX(), 
-                                     modules.get((int)(connectors.x)/4-1).getY()));
+  void addModule(Module newMod, PVector position, float rotation) {
+    grid.addModule(newMod, (int)position.x, (int)position.y);
+    newMod.attachTo(this, (int)position.x*40, (int)position.y*40, rotation);
+  }
+  
+  void drawGrid() {
+    for (PVector pos: grid.openPositions) {
+      PVector transPos = PVector.mult(pos, 40);
+      //transPos.rotate(getRotation());
+      pushMatrix();
+      fill(0, 0);
+      strokeWeight(3);
+      stroke(200);
+      translate(getX(), getY());
+      rotate(getRotation());
+      rect(transPos.x-20, transPos.y-20, 40, 40);
+      popMatrix();
     }
-    
-    int newModRotation = 0;
-    if (connectors.x % 2 != connectors.y % 2) newModRotation += 90;
-    
-    newMod.setPosition(newModPosition.x, newModPosition.y);
-    newMod.setRotation(radians(newModRotation));
-    newMod.attachTo(this);
-    
-    setAnchorUsed((int)connectors.x, true);
-    newMod.anchorUsed[(int)connectors.y] = true;
-    modules.add(newMod);
-  }
-  
-  void drawAnchors() {
-    ArrayList<PVector> a = getAnchors();
-    for (int c = 0; c < a.size(); c++) {
-      //if (!anchorUsed(c)) { Gave up trying to hide used anchors
-        //if (c > 3) {
-        //  a.get(c).rotate(getRotation());
-        //  ellipse(getX()+a.get(c).x, getY()+a.get(c).y, 5, 5);
-        //}
-        //else 
-          ellipse(a.get(c).x, a.get(c).y, 5, 5);
-      //}
-    }
-  }
-  
-  ArrayList<PVector> getAnchors() {
-    ArrayList<PVector> anchorPos = super.getAnchors();
-    for (Module m: modules) {
-      for (PVector p: m.getAnchors()) {
-        PVector pos = p;
-        pos.rotate(getRotation());
-        anchorPos.add(PVector.add(pos, new PVector(getX(), getY())));
-      }
-    }
-    
-    return anchorPos;
-  }
-  
-  boolean anchorUsed(int c) {
-    if (c/4 == 0)
-      return anchorUsed[c];
-    else
-      return modules.get(c/4 - 1).anchorUsed(c % 4);
-  }
-  
-  void setAnchorUsed(int c, boolean b) {
-    if (c/4 == 0)
-      anchorUsed[c] = b;
-    else
-      modules.get(c/4 - 1).anchorUsed[c % 4] = b;
   }
   
   void createBody() {
