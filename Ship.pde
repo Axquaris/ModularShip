@@ -3,7 +3,7 @@ class Ship extends Module {
   ArrayList<Module> modules;
   int gunCooldown;
   
-  ShipGrid grid;
+  GridSystem grid;
   
   Ship () {
     super();
@@ -11,7 +11,7 @@ class Ship extends Module {
     //Setup Vars
     modules = new ArrayList<Module>();
     gunCooldown = 0;
-    grid = new ShipGrid(this);
+    grid = new GridSystem(this);
   }
   
   void update() {
@@ -42,9 +42,9 @@ class Ship extends Module {
     return null;
   }
   
-  void addModule(Module newMod, PVector position) {
+  void addModule(Module newMod, PVector position, float rotation) {
     grid.addModule(newMod, (int)position.x, (int)position.y);
-    newMod.attachTo(this, (int)position.x*40, (int)position.y*40);
+    newMod.attachTo(this, (int)position.x*40, (int)position.y*40, rotation);
   }
   
   void drawGrid() {
@@ -53,6 +53,8 @@ class Ship extends Module {
       //transPos.rotate(getRotation());
       pushMatrix();
       fill(0, 0);
+      strokeWeight(3);
+      stroke(200);
       translate(getX(), getY());
       rotate(getRotation());
       rect(transPos.x-20, transPos.y-20, 40, 40);

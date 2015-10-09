@@ -1,10 +1,10 @@
 
-class ShipGrid {
+class GridSystem {
   ArrayList<Module> modules;
   ArrayList<PVector> modulePositions; //Index corresponds with module location in modules
   ArrayList<PVector> openPositions; //Positions that a module can be attached to
   
-  ShipGrid(Ship ship) {
+  GridSystem(Ship ship) {
     modules = new ArrayList<Module>();
     modulePositions = new ArrayList<PVector>();
     openPositions = new ArrayList<PVector>();

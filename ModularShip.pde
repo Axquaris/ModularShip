@@ -8,10 +8,12 @@ boolean showGrid;
 
 Module grabbedMod;
 PVector newModPos;
+float newModRot;
 boolean keys[] = new boolean [7];
 
 void setup() {
   size(800, 800);
+  frameRate(30);
   smooth();
 
   Fisica.init(this);
@@ -38,6 +40,7 @@ void setup() {
   
   //
   showGrid = false;
+  newModRot = 0;
 }
 
 void draw() {
@@ -63,21 +66,25 @@ void draw() {
   player.update();
   
   if (showGrid) {
-    newModPos = null;
+    float closestPos = 9999;
+    
     for (PVector p: player.grid.openPositions) {
       PVector pos = PVector.mult(p, 40);
-      //pos.sub(20, 20);
       pos.rotate(player.getRotation());
       pos.add(player.getX(), player.getY());
-      line(pos.x, pos.y, grabbedMod.getX(), grabbedMod.getY());
       pos.sub(grabbedMod.getX(), grabbedMod.getY());
-      if (pos.mag() < 20) {
+      
+      if (closestPos > pos.mag()) {
         newModPos = new PVector(p.x, p.y);
-        break;
+        closestPos = pos.mag();
       }
     }
     
     player.drawGrid();
+    if (closestPos != 9999)
+      grabbedMod.drawGhost(player, newModPos, radians(newModRot));
+    if (closestPos >= 40)
+      newModPos = null;
   }
   
   world.draw(this);
@@ -104,7 +111,7 @@ void mouseReleased() {
       world.remove(grabbedMod);
       world.remove(player);
       
-      player.addModule(grabbedMod, newModPos);
+      player.addModule(grabbedMod, newModPos, radians(newModRot));
       
       world.add(player);
       
@@ -128,6 +135,10 @@ void keyPressed() {
     Module m = new Module();
     m.setPosition(width/2, height*3/4);
     world.add(m);
+  }
+  if (key == 'r') {
+    newModRot += 90;
+    if (newModRot >= 360) newModRot = 0;
   }
 }
 

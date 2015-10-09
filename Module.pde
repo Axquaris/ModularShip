@@ -21,13 +21,13 @@ class Module extends FCompound {
     createBody();
   }
   
-  void attachTo(Ship ship, int x, int y) {
+  void attachTo(Ship ship, int x, int y, float r) {
     FBox a = new FBox(dimensions.x*0.75, dimensions.y);
     FBox b = new FBox(dimensions.x, dimensions.y*0.75);
     a.setPosition(x, y);
-    a.setRotation(0);
+    a.setRotation(r);
     b.setPosition(x, y);
-    b.setRotation(0);
+    b.setRotation(r);
     ship.addBody(a);
     ship.addBody(b);
   }
@@ -37,5 +37,21 @@ class Module extends FCompound {
     addBody(a);
     FBox b = new FBox(dimensions.x, dimensions.y*0.75);
     addBody(b);
+  }
+  
+  void drawGhost(Ship parent, PVector p, float rotation) {
+    PVector position = PVector.mult(p, 40);
+    
+    pushMatrix();
+    fill(255);
+    strokeWeight(2);
+    stroke(0);
+    translate(parent.getX(), parent.getY());
+    rotate(parent.getRotation());
+    translate(position.x, position.y);
+    rotate(rotation);
+    rect(dimensions.x*.125-20, -20, dimensions.x*0.75, dimensions.y);
+    rect(-20, dimensions.y*.125-20, dimensions.x, dimensions.y*0.75);
+    popMatrix();
   }
 }
