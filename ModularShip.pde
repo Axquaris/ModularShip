@@ -4,10 +4,10 @@ import fisica.*;
 FWorld world;
 Ship player;
 
-boolean showAnchors;
-PVector lastConnectable;
+boolean showGrid;
 
 Module grabbedMod;
+PVector newModPos;
 boolean keys[] = new boolean [7];
 
 void setup() {
@@ -37,7 +37,7 @@ void setup() {
   world.add(m);
   
   //
-  showAnchors = false;
+  showGrid = false;
 }
 
 void draw() {
@@ -61,54 +61,42 @@ void draw() {
   
   world.step();
   player.update();
-  world.drawDebug(this);
   
-  if (showAnchors) {
-    ArrayList<PVector> grabbedAnchors = grabbedMod.getAnchors();
-    ArrayList<PVector> playerAnchors = player.getAnchors();
-    float closestPairDist = 9999;
-    int a = 0;
-    int b = 0;
-    
-    for (int i = 0; i < playerAnchors.size(); i++) {
-      for (int j = 0; j < grabbedAnchors.size(); j++) {
-        PVector distance = PVector.sub(playerAnchors.get(i), grabbedAnchors.get(j));
-        if (distance.mag() < closestPairDist && 
-            !player.anchorUsed(i)
-            && !grabbedMod.anchorUsed(j)) {
-          closestPairDist = distance.mag();
-          a = i;
-          b = j;
-        }
+  if (showGrid) {
+    newModPos = null;
+    for (PVector p: player.grid.openPositions) {
+      PVector pos = PVector.mult(p, 40);
+      //pos.sub(20, 20);
+      pos.rotate(player.getRotation());
+      pos.add(player.getX(), player.getY());
+      line(pos.x, pos.y, grabbedMod.getX(), grabbedMod.getY());
+      pos.sub(grabbedMod.getX(), grabbedMod.getY());
+      if (pos.mag() < 20) {
+        newModPos = new PVector(p.x, p.y);
+        System.out.println("V");
+        break;
       }
     }
     
-    if (closestPairDist < 40) {
-      line( playerAnchors.get(a).x, playerAnchors.get(a).y, 
-           grabbedAnchors.get(b).x, grabbedAnchors.get(b).y );
-      lastConnectable = new PVector(a, b);
-    }
-    else
-      lastConnectable = null;
-      
-    player.drawAnchors();
-    grabbedMod.drawAnchors();
+    player.drawGrid();
   }
+  
+  world.draw(this);
 }
 
 void mousePressed() {
   FBody b = world.getBody(mouseX, mouseY);
   if ((b instanceof Module) && !(b instanceof Ship)) {
     grabbedMod = (Module)b;
-    showAnchors = true;
+    showGrid = true;
   }
 }
 
 void mouseReleased() {
-  if (showAnchors) {
-    showAnchors = false;
+  if (showGrid) {
+    showGrid = false;
     
-    if (lastConnectable != null) {
+    if (newModPos != null) {
       PVector oldPos = new PVector(player.getX(), player.getY());
       float oldRot = player.getRotation();
       PVector oldVel = new PVector(player.getVelocityX(), player.getVelocityY());
@@ -117,7 +105,7 @@ void mouseReleased() {
       world.remove(player);
       world.remove(grabbedMod);
       
-      player.addModule(grabbedMod, lastConnectable);
+      player.addModule(grabbedMod, newModPos);
       
       world.add(player);
       
