@@ -81,10 +81,19 @@ void draw() {
     }
     
     player.drawGrid();
-    if (closestPos != 9999)
-      grabbedMod.drawGhost(player, newModPos, radians(newModRot));
-    if (closestPos >= 40)
-      newModPos = null;
+    
+    if(newModPos != null) {
+      boolean thrusterCondition = (!(grabbedMod instanceof ThrusterModule) 
+          || (grabbedMod instanceof ThrusterModule) 
+          && player.grid.thrusterAttachable((int)newModPos.x, (int)newModPos.y ,(int)newModRot));//Makes sure that if the mod is a thruster it can be attached
+          
+      if (closestPos >= 40 || !thrusterCondition) {
+        grabbedMod.drawGhost(player, newModPos, radians(newModRot), 100);
+        newModPos = null;
+      }
+      else if (thrusterCondition)
+        grabbedMod.drawGhost(player, newModPos, radians(newModRot), 0);
+    }
   }
   
   world.draw(this);
@@ -117,8 +126,8 @@ void mouseReleased() {
       
       player.setPosition(oldPos.x, oldPos.y);
       player.setRotation(oldRot);
-      player.setVelocity(oldVel.x, oldVel.y);
-      player.setAngularVelocity(oldAngVel);
+      //player.setVelocity(oldVel.x, oldVel.y);
+      //player.setAngularVelocity(oldAngVel);
     }
   }
 }
@@ -133,6 +142,11 @@ void keyPressed() {
   if (key == ' ') keys[6] = true; //SPACEBAR
   if (key == 'n') {
     Module m = new Module();
+    m.setPosition(width/2, height*3/4);
+    world.add(m);
+  }
+  if (key == 'm') {
+    ThrusterModule m = new ThrusterModule();
     m.setPosition(width/2, height*3/4);
     world.add(m);
   }

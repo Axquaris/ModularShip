@@ -32,9 +32,8 @@ class Ship extends Module {
       bullet.setPosition(pos.x, pos.y);
       bullet.setVelocity(vel.x, vel.y);
       bullet.setRotation(getRotation());
-      
       vel.mult(bullet.getDensity());
-      addForce(-vel.x, -vel.y);
+      bullet.addForce(-vel.x, -vel.y);
       gunCooldown = 10;
     
       return bullet;
@@ -73,4 +72,14 @@ class Ship extends Module {
     core.setFillColor(color(#000000));
     addBody(core);
   }
+  
+  /*PVector getCenterOfMass() {
+    PVector numerator = new PVector();
+    float denominator = getMass();
+    
+    for(Module b: grid.modules) {
+      numerator.add(PVector.mult(b.getCenterOfMass(), b.getMass()));
+    }
+    return PVector.div(numerator, denominator);
+  }*/
 }
