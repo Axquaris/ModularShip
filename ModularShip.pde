@@ -46,7 +46,7 @@ void setup() {
 void draw() {
   background(255);
   
-  PVector f = new PVector(0, 0);
+  /*PVector f = new PVector(0, 0);
   float r = 0;
   if (keys[0]) f.y += 3000;
   if (keys[1]) r += -70;
@@ -56,8 +56,17 @@ void draw() {
   if (keys[5]) f.x += -1000;
   f.rotate(player.getRotation());
   player.addForce(f.x, f.y);
-  player.addTorque(r);
-  
+  player.addTorque(r);*/
+  String f = "";
+  if (keys[0]) f += "W";
+  if (keys[1]) f += "A";
+  if (keys[2]) f += "S";
+  if (keys[3]) f += "D";
+  if (keys[4]) f += "Q";
+  if (keys[5]) f += "E";
+  if (!f.equals("")) {
+    player.thrusterSystem.fireThrusters(f); //<>//
+  }
   if (keys[6]) {
     world.add(player.fire());
   }
@@ -126,8 +135,10 @@ void mouseReleased() {
       
       player.setPosition(oldPos.x, oldPos.y);
       player.setRotation(oldRot);
-      //player.setVelocity(oldVel.x, oldVel.y);
-      //player.setAngularVelocity(oldAngVel);
+      player.setVelocity(oldVel.x, oldVel.y);
+      player.setAngularVelocity(oldAngVel);
+      
+      //System.out.println(player.getCenterOfMass()); //DEBUG center of mass
     }
   }
 }

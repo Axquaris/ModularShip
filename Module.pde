@@ -21,6 +21,7 @@ class Module extends FCompound {
   }
   
   void attachTo(Ship ship, int x, int y, float r) {
+    gridPos = new PVector(x/40, y/40);
     FBox a = new FBox(dimensions.x*0.75, dimensions.y);
     FBox b = new FBox(dimensions.x, dimensions.y*0.75);
     a.setPosition(x, y);
@@ -55,12 +56,6 @@ class Module extends FCompound {
   }
   
   PVector getCenterOfMass() {
-    PVector numerator = new PVector();
-    float denominator = getMass();
-    
-    for(FBody b: (ArrayList<FBody>)getBodies()) {
-      numerator.add(PVector.mult(new PVector(b.getX(), b.getY()), b.getMass()));
-    }
-    return PVector.div(numerator, denominator);
+    return new PVector(gridPos.x*40, gridPos.y*40);
   }
 }

@@ -1,7 +1,6 @@
 
 class ThrusterModule extends Module{
   ArrayList<Thruster> thrusters;
-  //PShape pShape;
   
   ThrusterModule() {
     super();
@@ -49,5 +48,15 @@ class ThrusterModule extends Module{
     rect(-20 +dimensions.x*.2, -20 +dimensions.y*(.8), dimensions.x*.6, dimensions.y*.2);
     rect(-20 +dimensions.x*.1, -20 +dimensions.y*(.6), dimensions.x*.8, dimensions.y*.2);
     popMatrix();
+  }
+  
+  void setThrusterOrientation(float rotation) {
+    for (Thruster t: thrusters)
+      t.orientation = rotation;
+  }
+  
+  void updateThrusterPos(int x, int y) {
+    for (Thruster t: thrusters)
+      t.position.add(x, y);
   }
 }

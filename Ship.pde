@@ -1,17 +1,24 @@
 
-class Ship extends Module {
-  ArrayList<Module> modules;
+class Ship extends ThrusterModule {
+  ArrayList<Thruster> thrusters;
   int gunCooldown;
   
   GridSystem grid;
+  ThrusterSystem thrusterSystem;
   
   Ship () {
     super();
     
     //Setup Vars
-    modules = new ArrayList<Module>();
+    thrusters = new ArrayList<Thruster>();
+    thrusters.add(new Thruster(new PVector(-10, 20), new PVector(0, -200)));
+    thrusters.add(new Thruster(new PVector(10, 20), new PVector(0, -200)));
+    thrusters.add(new Thruster(new PVector(-10, -20), new PVector(0, 200)));
+    thrusters.add(new Thruster(new PVector(10, -20), new PVector(0, 200)));
+    
     gunCooldown = 0;
     grid = new GridSystem(this);
+    thrusterSystem = new ThrusterSystem(this);
   }
   
   void update() {
@@ -44,6 +51,15 @@ class Ship extends Module {
   void addModule(Module newMod, PVector position, float rotation) {
     grid.addModule(newMod, (int)position.x, (int)position.y);
     newMod.attachTo(this, (int)position.x*40, (int)position.y*40, rotation);
+    
+    if (newMod instanceof ThrusterModule){
+      ((ThrusterModule)newMod).setThrusterOrientation(rotation);
+      ((ThrusterModule)newMod).updateThrusterPos((int)position.x*40, (int)position.y*40);
+      
+      thrusterSystem.addThruster((ThrusterModule)newMod);
+    }
+    
+    thrusterSystem.updateWASDQE();
   }
   
   void drawGrid() {
@@ -73,13 +89,16 @@ class Ship extends Module {
     addBody(core);
   }
   
-  /*PVector getCenterOfMass() {
+  PVector getCenterOfMass() {
     PVector numerator = new PVector();
-    float denominator = getMass();
+    float denominator = 1;
     
     for(Module b: grid.modules) {
-      numerator.add(PVector.mult(b.getCenterOfMass(), b.getMass()));
+      if (!b.equals(this) && !(b instanceof ThrusterModule)) {
+        numerator.add(b.getCenterOfMass());
+        denominator++;
+      }
     }
     return PVector.div(numerator, denominator);
-  }*/
+  }
 }
