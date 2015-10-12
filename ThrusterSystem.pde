@@ -118,6 +118,5 @@ class ThrusterSystem {
           d.add(t);
       }
     }
-    System.out.println(w);
   }
 }

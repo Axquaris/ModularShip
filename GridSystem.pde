@@ -102,7 +102,8 @@ class GridSystem {
     else
       return false;
     
-    if (positionUsed(x, y) && !(getModuleAt(x, y) instanceof ThrusterModule))
+    if (positionUsed(x, y) && (!(getModuleAt(x, y) instanceof ThrusterModule)
+        || (getModuleAt(x, y) instanceof Ship) ))
       return true;
     return false;
   }
