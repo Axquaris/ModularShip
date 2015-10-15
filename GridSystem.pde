@@ -28,10 +28,12 @@ class GridSystem {
       modulePositions.add(new PVector(x, y));
       
       //Update open positions
-      if (positionBlank(x+1, y)) openPositions.add(new PVector(x+1, y));
-      if (positionBlank(x-1, y)) openPositions.add(new PVector(x-1, y));
-      if (positionBlank(x, y+1)) openPositions.add(new PVector(x, y+1));
-      if (positionBlank(x, y-1)) openPositions.add(new PVector(x, y-1));
+      if (!(module instanceof ThrusterModule)) {
+        if (positionBlank(x+1, y)) openPositions.add(new PVector(x+1, y));
+        if (positionBlank(x-1, y)) openPositions.add(new PVector(x-1, y));
+        if (positionBlank(x, y+1)) openPositions.add(new PVector(x, y+1));
+        if (positionBlank(x, y-1)) openPositions.add(new PVector(x, y-1));
+      }
     }
   }
   
@@ -85,5 +87,28 @@ class GridSystem {
         openPositions.remove(new PVector(x, y));
       }
     }
+  }
+  
+  //Tells whether a thruster with given rotation can be added to a position
+  boolean thrusterAttachable(int x, int y, int rotation) {
+    if (rotation == 0)
+      y += 1;
+    else if (rotation == 90)
+      x -= 1;
+    else if (rotation == 180)
+      y -= 1;
+    else if (rotation == 270)
+      x += 1;
+    else
+      return false;
+    
+    if (positionUsed(x, y) && (!(getModuleAt(x, y) instanceof ThrusterModule)
+        || (getModuleAt(x, y) instanceof Ship) ))
+      return true;
+    return false;
+  }
+  
+  Module getModuleAt(int x, int y) {
+    return modules.get(modulePositions.indexOf(new PVector(x, y)));
   }
 }

@@ -44,20 +44,18 @@ void setup() {
 }
 
 void draw() {
-  background(255);
+  background(240);
   
-  PVector f = new PVector(0, 0);
-  float r = 0;
-  if (keys[0]) f.y += 3000;
-  if (keys[1]) r += -70;
-  if (keys[2]) f.y += -1000;
-  if (keys[3]) r += 70;
-  if (keys[4]) f.x += 1000;
-  if (keys[5]) f.x += -1000;
-  f.rotate(player.getRotation());
-  player.addForce(f.x, f.y);
-  player.addTorque(r);
-  
+  String f = "";
+  if (keys[0]) f += "W";
+  if (keys[1]) f += "A";
+  if (keys[2]) f += "S";
+  if (keys[3]) f += "D";
+  if (keys[4]) f += "Q";
+  if (keys[5]) f += "E";
+  if (!f.equals("")) {
+    player.thrusterSystem.fireThrusters(f); //<>//
+  }
   if (keys[6]) {
     world.add(player.fire());
   }
@@ -81,10 +79,19 @@ void draw() {
     }
     
     player.drawGrid();
-    if (closestPos != 9999)
-      grabbedMod.drawGhost(player, newModPos, radians(newModRot));
-    if (closestPos >= 40)
-      newModPos = null;
+    
+    if(newModPos != null) {
+      boolean thrusterCondition = (!(grabbedMod instanceof ThrusterModule) 
+          || (grabbedMod instanceof ThrusterModule) 
+          && player.grid.thrusterAttachable((int)newModPos.x, (int)newModPos.y ,(int)newModRot));//Makes sure that if the mod is a thruster it can be attached
+          
+      if (closestPos >= 40 || !thrusterCondition) {
+        grabbedMod.drawGhost(player, newModPos, radians(newModRot), 100);
+        newModPos = null;
+      }
+      else if (thrusterCondition)
+        grabbedMod.drawGhost(player, newModPos, radians(newModRot), 0);
+    }
   }
   
   world.draw(this);
@@ -133,6 +140,11 @@ void keyPressed() {
   if (key == ' ') keys[6] = true; //SPACEBAR
   if (key == 'n') {
     Module m = new Module();
+    m.setPosition(width/2, height*3/4);
+    world.add(m);
+  }
+  if (key == 'm') {
+    ThrusterModule m = new ThrusterModule();
     m.setPosition(width/2, height*3/4);
     world.add(m);
   }

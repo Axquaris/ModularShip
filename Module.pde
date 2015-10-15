@@ -1,5 +1,4 @@
 
-
 class Module extends FCompound {
   PVector dimensions;
   
@@ -22,6 +21,7 @@ class Module extends FCompound {
   }
   
   void attachTo(Ship ship, int x, int y, float r) {
+    gridPos = new PVector(x/40, y/40);
     FBox a = new FBox(dimensions.x*0.75, dimensions.y);
     FBox b = new FBox(dimensions.x, dimensions.y*0.75);
     a.setPosition(x, y);
@@ -39,13 +39,13 @@ class Module extends FCompound {
     addBody(b);
   }
   
-  void drawGhost(Ship parent, PVector p, float rotation) {
+  void drawGhost(Ship parent, PVector p, float rotation, float c) {
     PVector position = PVector.mult(p, 40);
     
     pushMatrix();
     fill(255);
     strokeWeight(2);
-    stroke(0);
+    stroke(c);
     translate(parent.getX(), parent.getY());
     rotate(parent.getRotation());
     translate(position.x, position.y);
@@ -53,5 +53,9 @@ class Module extends FCompound {
     rect(dimensions.x*.125-20, -20, dimensions.x*0.75, dimensions.y);
     rect(-20, dimensions.y*.125-20, dimensions.x, dimensions.y*0.75);
     popMatrix();
+  }
+  
+  PVector getCenterOfMass() {
+    return new PVector(gridPos.x*40, gridPos.y*40);
   }
 }
