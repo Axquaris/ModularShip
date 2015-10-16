@@ -8,7 +8,7 @@ class WeaponModule extends Module{
     gunCooldown = 0;
   }
   
-  FCompound fire(Ship ship) {
+  Bullet fire(Ship ship) {
     if (gunCooldown == 0 && !ship.grid.weaponFireable((int)gridPos.x, (int)gridPos.y, (int)gridRotation)) {
       PVector vel = new PVector(0, 1);
       vel.setMag(20);
@@ -21,7 +21,7 @@ class WeaponModule extends Module{
       vel.x += ship.getVelocityX();
       vel.y += ship.getVelocityY();
       
-      FCompound bullet = createBullet();
+      Bullet bullet = new Bullet();
       bullet.setPosition(pos.x, pos.y);
       bullet.setVelocity(vel.x, vel.y);
       bullet.setRotation(ship.getRotation()+gridRotation+PI);

@@ -40,7 +40,7 @@ class Ship extends ThrusterModule {
       vel.x += getVelocityX();
       vel.y += getVelocityY();
       
-      FCompound bullet = createBullet();
+      Bullet bullet = new Bullet();
       bullet.setPosition(pos.x, pos.y);
       bullet.setVelocity(vel.x, vel.y);
       bullet.setRotation(getRotation());

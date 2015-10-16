@@ -11,6 +11,8 @@ PVector newModPos;
 float newModRot;
 boolean keys[] = new boolean [7];
 
+int frame;
+
 void setup() {
   size(800, 800);
   frameRate(30);
@@ -41,10 +43,13 @@ void setup() {
   //
   showGrid = false;
   newModRot = 0;
+  
+  frame = 0;
 }
 
 void draw() {
   background(240);
+  frame++;
   
   String f = "";
   if (keys[0]) f += "W";
@@ -182,22 +187,37 @@ FCircle createBlob(int size) {
   return blob;
 }
 
-FCompound createBullet() {
-  FCircle head = new FCircle(8);
-  head.setFillColor(color(#000000));
-  
-  FBox body = new FBox(8, 15);
-  body.setPosition(0, -8); 
-  
-  FCompound bullet = new FCompound();
-  bullet.addBody(head);
-  bullet.addBody(body);
-  
-  bullet.setGrabbable(false);
-  bullet.setBullet(true);
-  bullet.setDensity(.1);
-  bullet.setDamping(0);
-  bullet.setAngularDamping(0);
-  
-  return bullet;
-}
+void contactStarted(FContact contact) {
+   if ((contact.getBody1() instanceof Bullet) || (contact.getBody2() instanceof Bullet)) {
+     fill(170, 0, 0);
+     ellipse(contact.getX(), contact.getY(), 20, 20);
+   }
+ }
+
+ void contactPersisted(FContact contact) {
+   if ((contact.getBody1() instanceof Bullet) || (contact.getBody2() instanceof Bullet)) {
+     fill(170, 170, 0);
+     ellipse(contact.getX(), contact.getY(), 15, 15);
+   }
+ }
+ 
+ void contactEnded(FContact contact) {
+   if (contact.getBody1() instanceof Bullet) {
+     fill(170, 85, 0);
+     ellipse(contact.getX(), contact.getY(), 10, 10);
+     
+     Bullet b = (Bullet)contact.getBody1();
+     PVector v = new PVector(b.getVelocityX(), b.getVelocityY());
+     if (v.mag() <= 500)
+       world.remove(b);
+   }
+   else if (contact.getBody2() instanceof Bullet) {
+     fill(170, 85, 0);
+     ellipse(contact.getX(), contact.getY(), 10, 10);
+     
+     Bullet b = (Bullet)contact.getBody2();
+     PVector v = new PVector(b.getVelocityX(), b.getVelocityY());
+     if (v.mag() <= 500)
+       world.remove(b);
+   }
+ }
