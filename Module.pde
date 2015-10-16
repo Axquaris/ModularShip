@@ -10,6 +10,7 @@ class Module extends FCompound {
     
     //Set Properties
     dimensions = new PVector(40, 40);
+    gridPos = new PVector();
     setBullet(true);
     setDamping(0);
     setAngularDamping(0);
