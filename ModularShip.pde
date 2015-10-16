@@ -54,10 +54,10 @@ void draw() {
   if (keys[4]) f += "Q";
   if (keys[5]) f += "E";
   if (!f.equals("")) {
-    player.thrusterSystem.fireThrusters(f); //<>//
+    player.thrusterSystem.fireThrusters(f);
   }
   if (keys[6]) {
-    world.add(player.fire());
+    player.fire(world);
   }
   
   world.step();
@@ -84,12 +84,15 @@ void draw() {
       boolean thrusterCondition = (!(grabbedMod instanceof ThrusterModule) 
           || (grabbedMod instanceof ThrusterModule) 
           && player.grid.thrusterAttachable((int)newModPos.x, (int)newModPos.y ,(int)newModRot));//Makes sure that if the mod is a thruster it can be attached
+      boolean weaponCondition = (!(grabbedMod instanceof WeaponModule) 
+          || (grabbedMod instanceof WeaponModule) 
+          && player.grid.thrusterAttachable((int)newModPos.x, (int)newModPos.y ,(int)newModRot));//Makes sure that if the mod is a thruster it can be attached
           
-      if (closestPos >= 40 || !thrusterCondition) {
+      if (closestPos >= 40 || !thrusterCondition || !weaponCondition) {
         grabbedMod.drawGhost(player, newModPos, radians(newModRot), 100);
         newModPos = null;
       }
-      else if (thrusterCondition)
+      else if (thrusterCondition && weaponCondition)
         grabbedMod.drawGhost(player, newModPos, radians(newModRot), 0);
     }
   }
@@ -116,7 +119,7 @@ void mouseReleased() {
       float oldAngVel = player.getAngularVelocity();
       
       world.remove(grabbedMod);
-      world.remove(player);
+      world.remove(player); //<>//
       
       player.addModule(grabbedMod, newModPos, radians(newModRot));
       
@@ -138,14 +141,19 @@ void keyPressed() {
   if (key == 'q') keys[4] = true; //Q
   if (key == 'e') keys[5] = true; //E
   if (key == ' ') keys[6] = true; //SPACEBAR
-  if (key == 'n') {
+  if (key == 'n') { //Module
     Module m = new Module();
+    m.setPosition(width/4, height*3/4);
+    world.add(m);
+  }
+  if (key == 'm') { //Thruster
+    ThrusterModule m = new ThrusterModule();
     m.setPosition(width/2, height*3/4);
     world.add(m);
   }
-  if (key == 'm') {
-    ThrusterModule m = new ThrusterModule();
-    m.setPosition(width/2, height*3/4);
+  if (key == ',') { //Gun
+    WeaponModule m = new WeaponModule();
+    m.setPosition(width*3/4, height*3/4);
     world.add(m);
   }
   if (key == 'r') {

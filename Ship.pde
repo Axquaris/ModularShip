@@ -5,6 +5,7 @@ class Ship extends ThrusterModule {
   
   GridSystem grid;
   ThrusterSystem thrusterSystem;
+  WeaponSystem weaponSystem;
   
   Ship () {
     super();
@@ -19,13 +20,17 @@ class Ship extends ThrusterModule {
     gunCooldown = 0;
     grid = new GridSystem(this);
     thrusterSystem = new ThrusterSystem(this);
+    weaponSystem = new WeaponSystem(this);
   }
   
   void update() {
     if (gunCooldown != 0) gunCooldown--;
+    weaponSystem.update();
   }
   
-  FCompound fire() {
+  void fire(FWorld world) {
+    weaponSystem.fire(world);
+    
     if (gunCooldown == 0 && !grid.positionUsed(0, 1)) {
       PVector vel = new PVector(0, 1);
       vel.setMag(20);
@@ -43,20 +48,25 @@ class Ship extends ThrusterModule {
       bullet.addForce(-vel.x, -vel.y);
       gunCooldown = 10;
     
-      return bullet;
+      world.add(bullet);
     }
-    return null;
   }
   
   void addModule(Module newMod, PVector position, float rotation) {
     grid.addModule(newMod, (int)position.x, (int)position.y);
     newMod.attachTo(this, (int)position.x*40, (int)position.y*40, rotation);
+    newMod.gridPos = new PVector(position.x, position.y);
+    newMod.gridRotation = rotation;
     
     if (newMod instanceof ThrusterModule){
       ((ThrusterModule)newMod).setThrusterOrientation(rotation);
       ((ThrusterModule)newMod).updateThrusterPos((int)position.x*40, (int)position.y*40);
       
       thrusterSystem.addThruster((ThrusterModule)newMod);
+    }
+    
+    if (newMod instanceof WeaponModule){
+      weaponSystem.addWeapon((WeaponModule)newMod);
     }
     
     thrusterSystem.updateWASDQE();
