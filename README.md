@@ -10,7 +10,7 @@ As of now there are no enemies but it is possible to add modules to your ship an
 3. Add the Fisica library with the ["add library" tool](https://github.com/processing/processing/wiki/How-to-Install-a-Contributed-Library
                                                         "instructions on how to use the add library tool")
 4. Run the code with the Processing editor
-5. Profit!
+5. Play!
 
 ### How to play the game
 * The movement controlls are WASD with Q and E controlling strafing
