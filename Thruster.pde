@@ -15,7 +15,6 @@ class Thruster {
     f.rotate(orientation);
     f.rotate(ship.getRotation());
     PVector p = new PVector(position.x, position.y);
-    //p.rotate(orientation);
     p.rotate(ship.getRotation());
     ship.addForce(f.x, f.y, p.x, p.y);
     
@@ -24,7 +23,6 @@ class Thruster {
     rotate(ship.getRotation());
     translate(position.x, position.y);
     rotate(orientation);
-    //line(0, 0, f.x/100, f.y/100);
     ellipse(0, 0, 15, 25);
     popMatrix();
   }
