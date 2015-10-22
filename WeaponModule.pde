@@ -10,25 +10,32 @@ class WeaponModule extends Module{
   
   Bullet fire(Ship ship) {
     if (gunCooldown == 0 && !ship.grid.weaponFireable((int)gridPos.x, (int)gridPos.y, (int)gridRotation)) {
-      PVector vel = new PVector(0, 1);
-      vel.setMag(20);
-      vel.rotate(ship.getRotation()+gridRotation+PI);
+      PVector force = new PVector(0, 1);
+      force.setMag(30);
+      force.rotate(ship.getRotation()+gridRotation+PI);
       PVector pos = new PVector(gridPos.x*40, gridPos.y*40);
-      
       pos.rotate(ship.getRotation());
-      pos.add(ship.getX()+vel.x, ship.getY()+vel.y);
-      vel.setMag(5000);
-      vel.x += ship.getVelocityX();
-      vel.y += ship.getVelocityY();
+      pos.add(force);
+      force.setMag(5000);
       
       Bullet bullet = new Bullet();
-      bullet.setPosition(pos.x, pos.y);
-      bullet.setVelocity(vel.x, vel.y);
+      bullet.setPosition(pos.x+ship.getX(), pos.y+ship.getY());
       bullet.setRotation(ship.getRotation()+gridRotation+PI);
-      vel.mult(bullet.getDensity());
-      bullet.addForce(-vel.x, -vel.y);
-      gunCooldown = 10;
       
+      bullet.setVelocity(ship.getVelocityX(), ship.getVelocityY());
+      bullet.addForce(force.x, force.y);
+      
+      PVector recoilOffset = new PVector(gridPos.x*40, gridPos.y*40);
+      recoilOffset.rotate(ship.getRotation());
+      ship.addForce(-force.x, -force.y, recoilOffset.x, recoilOffset.y);
+      
+      /*PVector f = new PVector(force.x, force.y);
+      f.rotate(orientation);
+      f.rotate(ship.getRotation());
+      PVector p = new PVector(position.x, position.y);
+      p.rotate(ship.getRotation());
+      ship.addForce(f.x, f.y, p.x, p.y);*/
+      gunCooldown = 10;
       return bullet;
     }
     return null;

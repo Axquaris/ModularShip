@@ -32,22 +32,21 @@ class Ship extends ThrusterModule {
     weaponSystem.fire(world);
     
     if (gunCooldown == 0 && !grid.positionUsed(0, 1)) {
-      PVector vel = new PVector(0, 1);
-      vel.setMag(20);
-      vel.rotate(getRotation());
-      PVector pos = new PVector(getX()+vel.x, getY()+vel.y);
-      vel.setMag(5000);
-      vel.x += getVelocityX();
-      vel.y += getVelocityY();
+      PVector force = new PVector(0, 1);
+      force.setMag(40);
+      force.rotate(getRotation());
+      PVector pos = new PVector(getX()+force.x, getY()+force.y);
+      force.setMag(5000);
       
       Bullet bullet = new Bullet();
       bullet.setPosition(pos.x, pos.y);
-      bullet.setVelocity(vel.x, vel.y);
       bullet.setRotation(getRotation());
-      vel.mult(bullet.getDensity());
-      bullet.addForce(-vel.x, -vel.y);
+      
+      bullet.setVelocity(getVelocityX(), getVelocityY());
+      bullet.addForce(force.x, force.y);
+      addForce(-force.x, -force.y);
+      
       gunCooldown = 10;
-    
       world.add(bullet);
     }
   }
