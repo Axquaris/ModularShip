@@ -14,7 +14,7 @@ boolean keys[] = new boolean [7];
 int frame;
 
 void setup() {
-  size(800, 800);
+  size(1300, 900);
   frameRate(30);
   smooth();
 
@@ -28,8 +28,8 @@ void setup() {
   world.add(player);
   
   int size = 20;
-  for (float i = size; i <= width-size; i += size*1.5) {
-    for (float j = size; j <= height/2-size; j += size*1.5) {
+  for (float i = size; i <= width-size; i += size*2) {
+    for (float j = size; j <= height/2-size; j += size*2) {
       FCircle blob = createBlob(size);
       blob.setPosition(i, j);
       world.add(blob);
