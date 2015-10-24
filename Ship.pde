@@ -21,6 +21,8 @@ class Ship extends ThrusterModule {
     grid = new GridSystem(this);
     thrusterSystem = new ThrusterSystem(this);
     weaponSystem = new WeaponSystem(this);
+    
+    hp = 200;
   }
   
   void update() {
@@ -52,6 +54,8 @@ class Ship extends ThrusterModule {
   }
   
   void addModule(Module newMod, PVector position, float rotation) {
+    resetForces(); //Prevent weird block adding recoil
+    
     grid.addModule(newMod, (int)position.x, (int)position.y);
     newMod.attachTo(this, (int)position.x*40, (int)position.y*40, rotation);
     newMod.gridPos = new PVector(position.x, position.y);
@@ -71,10 +75,33 @@ class Ship extends ThrusterModule {
     thrusterSystem.updateWASDQE();
   }
   
+  //Creates new ship as replacement
+  Ship removeModule(Module mod) {
+    grid.removeModule(mod);
+    
+    Ship child = new Ship();
+    child.grid = grid;
+    child.thrusterSystem = thrusterSystem;
+    child.weaponSystem = weaponSystem;
+    for (Module m: child.grid.modules) {
+      if (!(m instanceof Ship))
+        m.attachTo(child, (int)m.gridPos.x*40, (int)m.gridPos.y*40, m.gridRotation);
+    }
+    child.thrusterSystem.updateWASDQE();
+    
+    child.setPosition(getX(), getY());
+    child.setVelocity(getVelocityX(), getVelocityY());
+    child.setRotation(getRotation());
+    child.setAngularVelocity(getAngularVelocity());
+    
+    child.grid.modules.set(0, child);
+    child.grid.modulePositions.set(0, new PVector(0, 0));
+    return child;
+  }
+  
   void drawGrid() {
     for (PVector pos: grid.openPositions) {
       PVector transPos = PVector.mult(pos, 40);
-      //transPos.rotate(getRotation());
       pushMatrix();
       fill(0, 0);
       strokeWeight(3);

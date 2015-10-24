@@ -3,6 +3,7 @@ import fisica.*;
 
 FWorld world;
 Ship player;
+Ship dummy;
 
 boolean showGrid;
 
@@ -24,8 +25,14 @@ void setup() {
   world.setEdges();
   
   player = new Ship();
-  player.setPosition(width/2, height*7/8);
+  player.setPosition(width/2, height*13/16);
   world.add(player);
+  
+  dummy = new Ship();
+  dummy.setPosition(width/8, height*13/16);
+  dummy.setRotation(-PI/2);
+  giveBasicBody(dummy);
+  world.add(dummy);
   
   int size = 20;
   for (float i = size; i <= width-size; i += size*2) {
@@ -36,11 +43,6 @@ void setup() {
     }
   }
   
-  Module m = new Module();
-  m.setPosition(width/2, height*3/4);
-  world.add(m);
-  
-  //
   showGrid = false;
   newModRot = 0;
   
@@ -148,22 +150,29 @@ void keyPressed() {
   if (key == ' ') keys[6] = true; //SPACEBAR
   if (key == 'n') { //Module
     Module m = new Module();
-    m.setPosition(width/4, height*3/4);
+    m.setPosition(width/4, height*5/8);
     world.add(m);
   }
   if (key == 'm') { //Thruster
     ThrusterModule m = new ThrusterModule();
-    m.setPosition(width/2, height*3/4);
+    m.setPosition(width/2, height*5/8);
     world.add(m);
   }
   if (key == ',') { //Gun
     WeaponModule m = new WeaponModule();
-    m.setPosition(width*3/4, height*3/4);
+    m.setPosition(width*3/4, height*5/8);
     world.add(m);
   }
   if (key == 'r') {
     newModRot += 90;
     if (newModRot >= 360) newModRot = 0;
+  }
+  if (key == 'b' && player.grid.modules.size() == 1) {
+    world.remove(player);
+    giveBasicBody(player);
+    world.add(player);
+    player.setRotation(PI/2);
+    player.setPosition(width*7/8, height*13/16);
   }
 }
 
@@ -188,36 +197,104 @@ FCircle createBlob(int size) {
 }
 
 void contactStarted(FContact contact) {
-   if ((contact.getBody1() instanceof Bullet) || (contact.getBody2() instanceof Bullet)) {
-     fill(170, 0, 0);
-     ellipse(contact.getX(), contact.getY(), 20, 20);
-   }
- }
+  if ((contact.getBody1() instanceof Bullet) || (contact.getBody2() instanceof Bullet)) {
+    fill(170, 0, 0);
+    ellipse(contact.getX(), contact.getY(), 20, 20);
+    
+    doDamage(contact);
+  }
+}
 
- void contactPersisted(FContact contact) {
-   if ((contact.getBody1() instanceof Bullet) || (contact.getBody2() instanceof Bullet)) {
-     fill(170, 170, 0);
-     ellipse(contact.getX(), contact.getY(), 15, 15);
-   }
- }
+void contactPersisted(FContact contact) {
+  if ((contact.getBody1() instanceof Bullet) || (contact.getBody2() instanceof Bullet)) {
+    fill(170, 170, 0);
+    ellipse(contact.getX(), contact.getY(), 15, 15);
+  }
+}
  
- void contactEnded(FContact contact) {
-   if (contact.getBody1() instanceof Bullet) {
-     fill(170, 85, 0);
-     ellipse(contact.getX(), contact.getY(), 10, 10);
-     
-     Bullet b = (Bullet)contact.getBody1();
-     PVector v = new PVector(b.getVelocityX(), b.getVelocityY());
-     if (v.mag() <= 500)
-       world.remove(b);
-   }
-   else if (contact.getBody2() instanceof Bullet) {
-     fill(170, 85, 0);
-     ellipse(contact.getX(), contact.getY(), 10, 10);
-     
-     Bullet b = (Bullet)contact.getBody2();
-     PVector v = new PVector(b.getVelocityX(), b.getVelocityY());
-     if (v.mag() <= 500)
-       world.remove(b);
-   }
- }
+void contactEnded(FContact contact) {
+  if (contact.getBody1() instanceof Bullet) {
+    fill(170, 85, 0);
+    ellipse(contact.getX(), contact.getY(), 10, 10);
+    
+    Bullet b = (Bullet)contact.getBody1();
+    PVector v = new PVector(b.getVelocityX(), b.getVelocityY());
+    if (v.mag() <= 500)
+      world.remove(b);
+  }
+  else if (contact.getBody2() instanceof Bullet) {
+    fill(170, 85, 0);
+    ellipse(contact.getX(), contact.getY(), 10, 10);
+    
+    Bullet b = (Bullet)contact.getBody2();
+    PVector v = new PVector(b.getVelocityX(), b.getVelocityY());
+    if (v.mag() <= 500)
+      world.remove(b);
+  }
+}
+ 
+void doDamage(FContact contact) {
+  Module hitMod;
+  Bullet bullet;
+  
+  if ((contact.getBody1() instanceof Bullet) && (contact.getBody2() instanceof Module)) {
+    hitMod = (Module)contact.getBody2();
+    bullet = (Bullet)contact.getBody1();
+  }
+  else if ((contact.getBody2() instanceof Bullet) && (contact.getBody1() instanceof Module)) {
+    hitMod = (Module)contact.getBody1();
+    bullet = (Bullet)contact.getBody2();
+  }
+  else return;
+  
+  if (hitMod instanceof Ship) {
+    try { //Module finding is not perfect so try-catch prevent crashes
+      hitMod = dummy.grid.findModuleAt(contact.getX(), contact.getY());
+      hitMod.hp -= (new PVector(bullet.getVelocityX(), bullet.getVelocityY()).mag() * bullet.getMass())/5;
+      
+      if (hitMod.hp <= 0) {
+        world.remove(dummy);
+        
+        if (!dummy.equals(hitMod)) {
+          dummy = dummy.removeModule(hitMod);
+          if (dummy.grid.modules.get(0) instanceof Ship)
+            world.add(dummy);
+          fill(50);
+          ellipse(contact.getX(), contact.getY(), 30, 30);
+        }
+        else {
+          fill(50);
+          ellipse(dummy.getX(), dummy.getY(), 60, 60);
+        } 
+      }
+    } catch(Exception e) {}
+  }
+  else{
+    hitMod.hp -= (new PVector(bullet.getVelocityX(), bullet.getVelocityY()).mag() * bullet.getMass())/5;
+    if (hitMod.hp <= 0) {
+      world.remove(hitMod);
+      
+      fill(50);
+      ellipse(contact.getX(), contact.getY(), 30, 30);
+    }
+  } 
+}
+
+void giveBasicBody(Ship s) {
+  s.addModule(new Module(), new PVector(1, 0), 0);
+  s.addModule(new Module(), new PVector(-1, 0), 0);
+  s.addModule(new Module(), new PVector(0, -1), 0);
+  s.addModule(new Module(), new PVector(0, -2), 0);
+  
+  s.addModule(new ThrusterModule(), new PVector(1, 1), PI);
+  s.addModule(new ThrusterModule(), new PVector(-1, 1), PI);
+  s.addModule(new ThrusterModule(), new PVector(-2, 0), -PI/2);
+  s.addModule(new ThrusterModule(), new PVector(-1, -2), -PI/2);
+  s.addModule(new ThrusterModule(), new PVector(2, 0), PI/2);
+  s.addModule(new ThrusterModule(), new PVector(1, -2), PI/2);
+  s.addModule(new ThrusterModule(), new PVector(-1, -1), 0);
+  s.addModule(new ThrusterModule(), new PVector(1, -1), 0);
+  s.addModule(new ThrusterModule(), new PVector(0, -3), 0);
+  
+  s.addModule(new WeaponModule(), new PVector(0, 1), PI);
+}
