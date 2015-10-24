@@ -54,6 +54,12 @@ class GridSystem {
     }
   }
   
+  void removeModule (Module mod) {
+    PVector pos = mod.gridPos;
+    removeModule((int)pos.x, (int)pos.y);
+    modules.remove(mod);
+  }
+  
   //Determines whether a grid position is "OPEN"
   boolean positionOpen(int x, int y) {
     for (PVector position: openPositions) {
@@ -123,6 +129,16 @@ class GridSystem {
   }
   
   Module getModuleAt(int x, int y) {
-    return modules.get(modulePositions.indexOf(new PVector(x, y)));
+    return modules.get(modulePositions.indexOf(new PVector(x, y))); 
+  }
+  
+  Module findModuleAt(float x, float y) {
+    Ship s = (Ship)modules.get(0);
+    PVector pos = new PVector(x, y);
+    pos.sub(new PVector(s.getX(), s.getY()));
+    pos.rotate(-s.getRotation());
+    pos.div(40);
+    
+    return getModuleAt(round(pos.x), round(pos.y));
   }
 }

@@ -23,6 +23,7 @@ class Thruster {
     rotate(ship.getRotation());
     translate(position.x, position.y);
     rotate(orientation);
+    fill(170, 0, 0);
     ellipse(0, 0, 15, 25);
     popMatrix();
   }

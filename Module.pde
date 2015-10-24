@@ -5,6 +5,8 @@ class Module extends FCompound {
   PVector gridPos;
   float gridRotation;
   
+  int hp;
+  
   Module () {
     super();
     
@@ -16,6 +18,7 @@ class Module extends FCompound {
     setAngularDamping(0);
     setDensity(0.1);
     setRotation(radians(180)); //Rotate Properly
+    hp = 100;
     
     //Create Body
     createBody();

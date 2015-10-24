@@ -5,7 +5,7 @@ class WeaponSystem {
   
   WeaponSystem(Ship ship) {
     this.ship = ship;
-     modules = new ArrayList<WeaponModule>();
+    modules = new ArrayList<WeaponModule>();
   }
   
   void addWeapon(WeaponModule wMod) {
