@@ -18,3 +18,6 @@ Right now you can add modules you your ship, fly around, and test firing on inde
 * M spawns a thruster module
 * COMMA spawns a weapon module
 * B loads a preset "basic" ship if you press it before adding modules to your ship
+
+### GIF!
+[![https://gyazo.com/fc4a24b8096642b714e5015139dd1ed4](https://i.gyazo.com/fc4a24b8096642b714e5015139dd1ed4.gif)](https://gyazo.com/fc4a24b8096642b714e5015139dd1ed4)
