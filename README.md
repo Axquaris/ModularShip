@@ -17,4 +17,4 @@ Right now you can add modules you your ship, fly around, and test firing on inde
 * N spawns a new structural module
 * M spawns a thruster module
 * COMMA spawns a weapon module
-* B makes your ship into the basic ship design and moves it (only if you haven't added anything to it)
+* B loads a preset "basic" ship if you press it before adding modules to your ship
