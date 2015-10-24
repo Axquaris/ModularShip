@@ -1,5 +1,5 @@
 
-class Bullet extends FCompound {
+class Bullet extends FCompound{
   Bullet() {
     super();
     
@@ -17,5 +17,10 @@ class Bullet extends FCompound {
     setDensity(.1);
     setDamping(0);
     setAngularDamping(0);
+  }
+  
+  @Override
+  public String toString() {
+    return "Bullet";
   }
 }

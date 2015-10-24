@@ -1,5 +1,5 @@
 
-class GridSystem {
+class GridSystem implements Serializable{
   ArrayList<Module> modules;
   ArrayList<PVector> modulePositions; //Index corresponds with module location in modules
   ArrayList<PVector> openPositions; //Positions that a module can be attached to

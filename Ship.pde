@@ -1,5 +1,5 @@
 
-class Ship extends ThrusterModule {
+class Ship extends ThrusterModule implements Serializable {
   ArrayList<Thruster> thrusters;
   int gunCooldown;
   

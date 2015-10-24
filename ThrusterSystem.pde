@@ -1,5 +1,5 @@
 
-class ThrusterSystem {
+class ThrusterSystem implements Serializable{
   ArrayList<ThrusterModule> modules;
   ArrayList<Thruster> allThrusters;
   ArrayList<Thruster> w; //Thrusters fired when W pressed

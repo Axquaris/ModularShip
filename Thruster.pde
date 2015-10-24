@@ -1,5 +1,5 @@
 
-class Thruster {
+class Thruster implements Serializable{
   PVector position;
   PVector force;
   float orientation;

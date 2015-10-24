@@ -1,5 +1,5 @@
 
-class Module extends FCompound {
+class Module extends FCompound implements Serializable{
   PVector dimensions;
   
   PVector gridPos;

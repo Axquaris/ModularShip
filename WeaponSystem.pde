@@ -1,5 +1,5 @@
 
-class WeaponSystem {
+class WeaponSystem implements Serializable{
   Ship ship;
   ArrayList<WeaponModule> modules;
   

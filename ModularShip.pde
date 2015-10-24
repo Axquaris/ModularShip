@@ -1,4 +1,9 @@
 
+// [I/O]
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 import fisica.*;
 
 FWorld world;
@@ -119,7 +124,7 @@ void mouseReleased() {
     
     if (newModPos != null) {
       PVector oldPos = new PVector(player.getX(), player.getY());
-      float oldRot = player.getRotation();
+      float oldRot = player.getRotation(); //<>//
       PVector oldVel = new PVector(player.getVelocityX(), player.getVelocityY());
       float oldAngVel = player.getAngularVelocity();
       
@@ -165,6 +170,9 @@ void keyPressed() {
     newModRot += 90;
     if (newModRot >= 360) newModRot = 0;
   }
+  if (key == 'p') {
+    saveShip(player);
+  }
 }
 
 void keyReleased() {
@@ -194,30 +202,43 @@ void contactStarted(FContact contact) {
    }
  }
 
- void contactPersisted(FContact contact) {
-   if ((contact.getBody1() instanceof Bullet) || (contact.getBody2() instanceof Bullet)) {
-     fill(170, 170, 0);
-     ellipse(contact.getX(), contact.getY(), 15, 15);
-   }
- }
+void contactPersisted(FContact contact) {
+  if ((contact.getBody1() instanceof Bullet) || (contact.getBody2() instanceof Bullet)) {
+    fill(170, 170, 0);
+    ellipse(contact.getX(), contact.getY(), 15, 15);
+  }
+}
  
- void contactEnded(FContact contact) {
-   if (contact.getBody1() instanceof Bullet) {
-     fill(170, 85, 0);
-     ellipse(contact.getX(), contact.getY(), 10, 10);
-     
-     Bullet b = (Bullet)contact.getBody1();
-     PVector v = new PVector(b.getVelocityX(), b.getVelocityY());
-     if (v.mag() <= 500)
-       world.remove(b);
-   }
-   else if (contact.getBody2() instanceof Bullet) {
-     fill(170, 85, 0);
-     ellipse(contact.getX(), contact.getY(), 10, 10);
-     
-     Bullet b = (Bullet)contact.getBody2();
-     PVector v = new PVector(b.getVelocityX(), b.getVelocityY());
-     if (v.mag() <= 500)
-       world.remove(b);
-   }
- }
+void contactEnded(FContact contact) {
+  if (contact.getBody1() instanceof Bullet) {
+    fill(170, 85, 0);
+    ellipse(contact.getX(), contact.getY(), 10, 10);
+    
+    Bullet b = (Bullet)contact.getBody1();
+    PVector v = new PVector(b.getVelocityX(), b.getVelocityY());
+    if (v.mag() <= 500)
+      world.remove(b);
+  }
+  else if (contact.getBody2() instanceof Bullet) {
+    fill(170, 85, 0);
+    ellipse(contact.getX(), contact.getY(), 10, 10);
+    
+    Bullet b = (Bullet)contact.getBody2();
+    PVector v = new PVector(b.getVelocityX(), b.getVelocityY());
+    if (v.mag() <= 500)
+      world.remove(b);
+  }
+}
+
+void saveShip(Ship s) {
+  try{
+    FileOutputStream fout = new FileOutputStream("shipTest.ser");
+    ObjectOutputStream oos = new ObjectOutputStream(fout);   
+    oos.writeObject(new Bullet());
+    oos.close();
+    System.out.println("Saved!");
+  } 
+  catch(Exception ex){
+    ex.printStackTrace();
+  }
+}

@@ -1,5 +1,5 @@
 
-class ThrusterModule extends Module{
+class ThrusterModule extends Module implements Serializable{
   ArrayList<Thruster> thrusters;
   
   ThrusterModule() {

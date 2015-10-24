@@ -1,5 +1,5 @@
 
-class WeaponModule extends Module{
+class WeaponModule extends Module implements Serializable{
   int gunCooldown;
   
   WeaponModule() {
