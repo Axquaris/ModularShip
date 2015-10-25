@@ -141,19 +141,19 @@ void mouseReleased() {
 }
 
 void keyPressed() {
-  if (key == 'w') keys[0] = true; //W
-  if (key == 'a') keys[1] = true; //A
-  if (key == 's') keys[2] = true; //S
-  if (key == 'd') keys[3] = true; //D
-  if (key == 'q') keys[4] = true; //Q
-  if (key == 'e') keys[5] = true; //E
+  if (key == 'w' || key == 'W') keys[0] = true; //W
+  if (key == 'a' || key == 'A') keys[1] = true; //A
+  if (key == 's' || key == 'S') keys[2] = true; //S
+  if (key == 'd' || key == 'D') keys[3] = true; //D
+  if (key == 'q' || key == 'Q') keys[4] = true; //Q
+  if (key == 'e' || key == 'E') keys[5] = true; //E
   if (key == ' ') keys[6] = true; //SPACEBAR
-  if (key == 'n') { //Module
+  if (key == 'n' || key == 'N') { //Module
     Module m = new Module();
     m.setPosition(width/4, height*5/8);
     world.add(m);
   }
-  if (key == 'm') { //Thruster
+  if (key == 'm' || key == 'M') { //Thruster
     ThrusterModule m = new ThrusterModule();
     m.setPosition(width/2, height*5/8);
     world.add(m);
@@ -163,11 +163,11 @@ void keyPressed() {
     m.setPosition(width*3/4, height*5/8);
     world.add(m);
   }
-  if (key == 'r') {
+  if (key == 'r' || key == 'R') {
     newModRot += 90;
     if (newModRot >= 360) newModRot = 0;
   }
-  if (key == 'b' && player.grid.modules.size() == 1) {
+  if ((key == 'b' || key == 'B') && player.grid.modules.size() == 1) {
     world.remove(player);
     giveBasicBody(player);
     world.add(player);
@@ -177,12 +177,12 @@ void keyPressed() {
 }
 
 void keyReleased() {
-  if (key == 'w') keys[0] = false; //W
-  if (key == 'a') keys[1] = false; //A
-  if (key == 's') keys[2] = false; //S
-  if (key == 'd') keys[3] = false; //D
-  if (key == 'q') keys[4] = false; //Q
-  if (key == 'e') keys[5] = false; //E
+  if (key == 'w' || key == 'W') keys[0] = false; //W
+  if (key == 'a' || key == 'A') keys[1] = false; //A
+  if (key == 's' || key == 'S') keys[2] = false; //S
+  if (key == 'd' || key == 'D') keys[3] = false; //D
+  if (key == 'q' || key == 'Q') keys[4] = false; //Q
+  if (key == 'e' || key == 'E') keys[5] = false; //E
   if (key == ' ') keys[6] = false; //SPACEBAR
 }
 
