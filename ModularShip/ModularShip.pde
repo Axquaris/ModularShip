@@ -15,7 +15,7 @@ boolean keys[] = new boolean [7];
 int frame;
 
 void setup() {
-  size(1300, 900);
+  size(1000, 700);
   frameRate(30);
   smooth();
 
@@ -250,7 +250,7 @@ void doDamage(FContact contact) {
   if (hitMod instanceof Ship) {
     try { //Module finding is not perfect so try-catch prevent crashes
       hitMod = dummy.grid.findModuleAt(contact.getX(), contact.getY());
-      hitMod.hp -= (new PVector(bullet.getVelocityX(), bullet.getVelocityY()).mag() * bullet.getMass())/5;
+      hitMod.hp -= (new PVector(bullet.getVelocityX(), bullet.getVelocityY()).mag() * bullet.getMass());
       
       if (hitMod.hp <= 0) {
         world.remove(dummy);
@@ -270,7 +270,7 @@ void doDamage(FContact contact) {
     } catch(Exception e) {}
   }
   else{
-    hitMod.hp -= (new PVector(bullet.getVelocityX(), bullet.getVelocityY()).mag() * bullet.getMass())/5;
+    hitMod.hp -= (new PVector(bullet.getVelocityX(), bullet.getVelocityY()).mag() * bullet.getMass());
     if (hitMod.hp <= 0) {
       world.remove(hitMod);
       
