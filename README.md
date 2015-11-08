@@ -13,13 +13,17 @@ Right now you can add modules you your ship, fly around, and test firing on inde
 5. Play!
 
 ### How to play the game
-* The movement controlls are WASD with Q and E controlling strafing
-* N spawns a new structural module
-* M spawns a thruster module
-* COMMA spawns a weapon module
-* B loads a preset "basic" ship if you press it before adding modules to your ship
-* + and - zoom in and out
-* c toggles whether the camera rotates with the ship
+* **Movement**
+  * The movement controlls are WASD with Q and E controlling strafing
+* **Building**
+  * N spawns a new structural module
+  * M spawns a thruster module
+  * COMMA spawns a weapon module
+  * MOUSE to move modules around
+  * B loads a preset "basic" ship if you press it before adding modules to your ship
+* **Camera**
+  * + and - zoom in and out
+  * c toggles whether the camera rotates with the ship
 
 ### GIFS!
 [![https://gyazo.com/4d62fd03fb35438cfb55eecfcbf59465](https://i.gyazo.com/4d62fd03fb35438cfb55eecfcbf59465.gif)](https://gyazo.com/4d62fd03fb35438cfb55eecfcbf59465)
