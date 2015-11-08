@@ -12,9 +12,11 @@ PVector newModPos;
 float newModRot;
 boolean keys[] = new boolean [7];
 
+//Camera Variables
 int frame;
 float zoom;
 float z;
+boolean snapToShipRotation;
 
 void setup() {
   size(1200, 900);
@@ -51,9 +53,11 @@ void setup() {
   showGrid = false;
   newModRot = 0;
   
+  //Camera Variables
   frame = 0;
   z = 0;
   zoom = (float)Math.exp(z);
+  snapToShipRotation = true;
 }
 
 void draw() {
@@ -63,7 +67,10 @@ void draw() {
   pushMatrix();
   scale(zoom);
   translate(width/2/zoom, height/2/zoom);
-  rotate(-player.getRotation()+PI);
+  if (snapToShipRotation)
+    rotate(-player.getRotation()+PI);
+  else
+    rotate(PI);
   translate(-player.getX(), -player.getY());
   
   String f = "";
@@ -195,6 +202,9 @@ void keyPressed() {
     if (z > -1.5)
       z-=.1;
     zoom = (float)Math.exp(z);
+  }
+  if (key == 'c' || key == 'C') {
+    snapToShipRotation = !snapToShipRotation;
   }
 }
 
@@ -337,7 +347,10 @@ void giveBasicBody(Ship s) {
 PVector translateMouse() {
   PVector mousePos = new PVector(mouseX/zoom, mouseY/zoom);
   mousePos.add(-width/2/zoom, -height/2/zoom);
-  mousePos.rotate(player.getRotation()+PI);
+  if (snapToShipRotation)
+    mousePos.rotate(player.getRotation()+PI);
+  else
+    mousePos.rotate(PI);
   mousePos.add(player.getX(), player.getY());
   return mousePos;
 }

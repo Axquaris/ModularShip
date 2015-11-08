@@ -4,7 +4,10 @@ public class FWorldModified extends FWorld {
   public void mouseEvent(MouseEvent event){
     PVector mousePos = new PVector(event.getX()/zoom, event.getY()/zoom);
     mousePos.add(-width/2/zoom, -height/2/zoom);
-    mousePos.rotate(player.getRotation()+PI);
+    if (snapToShipRotation)
+      mousePos.rotate(player.getRotation()+PI);
+    else
+      mousePos.rotate(PI);
     mousePos.add(player.getX(), player.getY());
     
   
