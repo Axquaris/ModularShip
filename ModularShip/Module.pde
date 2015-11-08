@@ -14,8 +14,8 @@ class Module extends FCompound {
     dimensions = new PVector(40, 40);
     gridPos = new PVector();
     setBullet(true);
-    setDamping(0);
-    setAngularDamping(0);
+    setDamping(.5);
+    setAngularDamping(1);
     setDensity(0.1);
     setRotation(radians(180)); //Rotate Properly
     hp = 100;

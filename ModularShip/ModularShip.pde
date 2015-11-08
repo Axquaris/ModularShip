@@ -1,7 +1,7 @@
 
 import fisica.*;
 
-FWorld world;
+FWorldModified world;
 Ship player;
 Ship dummy;
 
@@ -13,33 +13,38 @@ float newModRot;
 boolean keys[] = new boolean [7];
 
 int frame;
+float zoom;
+float z;
 
 void setup() {
-  size(1000, 700);
+  size(1200, 900);
   frameRate(30);
-  smooth();
 
   Fisica.init(this);
-  world = new FWorld();
+  world = new FWorldModified();
   world.setGravity(0, 0);
-  world.setEdges();
+  world.setEdges(0, 0, width*2, height*2);
   
   player = new Ship();
-  player.setPosition(width/2, height*13/16);
+  player.setPosition(width*7/4, height);
+  player.setRotation(PI/2);
+  player.setGrabbable(false);
   world.add(player);
   
   dummy = new Ship();
-  dummy.setPosition(width/8, height*13/16);
+  dummy.setPosition(width/4, height);
   dummy.setRotation(-PI/2);
   giveBasicBody(dummy);
   world.add(dummy);
   
   int size = 20;
-  for (float i = size; i <= width-size; i += size*2) {
-    for (float j = size; j <= height/2-size; j += size*2) {
-      FCircle blob = createBlob(size);
-      blob.setPosition(i, j);
-      world.add(blob);
+  for (float i = size; i <= width*2-size; i += size*4) {
+    for (float j = size; j <= height*2-size; j += size*4) {
+      if (j < height*7/8 || j > height*9/8) {
+        FCircle blob = createBlob(size);
+        blob.setPosition(i, j);
+        world.add(blob);
+      }
     }
   }
   
@@ -47,11 +52,19 @@ void setup() {
   newModRot = 0;
   
   frame = 0;
+  z = 0;
+  zoom = (float)Math.exp(z);
 }
 
 void draw() {
   background(240);
   frame++;
+  
+  pushMatrix();
+  scale(zoom);
+  translate(width/2/zoom, height/2/zoom);
+  rotate(-player.getRotation()+PI);
+  translate(-player.getX(), -player.getY());
   
   String f = "";
   if (keys[0]) f += "W";
@@ -105,10 +118,11 @@ void draw() {
   }
   
   world.draw(this);
+  popMatrix();
 }
 
 void mousePressed() {
-  FBody b = world.getBody(mouseX, mouseY);
+  FBody b = world.getBody(translateMouse().x, translateMouse().y);
   if ((b instanceof Module) && !(b instanceof Ship)) {
     grabbedMod = (Module)b;
     showGrid = true;
@@ -118,7 +132,7 @@ void mousePressed() {
 void mouseReleased() {
   if (showGrid) {
     showGrid = false;
-    
+     //<>//
     if (newModPos != null) {
       PVector oldPos = new PVector(player.getX(), player.getY());
       float oldRot = player.getRotation();
@@ -126,7 +140,7 @@ void mouseReleased() {
       float oldAngVel = player.getAngularVelocity();
       
       world.remove(grabbedMod);
-      world.remove(player); //<>//
+      world.remove(player);
       
       player.addModule(grabbedMod, newModPos, radians(newModRot));
       
@@ -150,17 +164,17 @@ void keyPressed() {
   if (key == ' ') keys[6] = true; //SPACEBAR
   if (key == 'n' || key == 'N') { //Module
     Module m = new Module();
-    m.setPosition(width/4, height*5/8);
+    m.setPosition(width*31/16, height*7/8);
     world.add(m);
   }
   if (key == 'm' || key == 'M') { //Thruster
     ThrusterModule m = new ThrusterModule();
-    m.setPosition(width/2, height*5/8);
+    m.setPosition(width*31/16, height);
     world.add(m);
   }
   if (key == ',') { //Gun
     WeaponModule m = new WeaponModule();
-    m.setPosition(width*3/4, height*5/8);
+    m.setPosition(width*31/16, height*9/8);
     world.add(m);
   }
   if (key == 'r' || key == 'R') {
@@ -171,8 +185,16 @@ void keyPressed() {
     world.remove(player);
     giveBasicBody(player);
     world.add(player);
-    player.setRotation(PI/2);
-    player.setPosition(width*7/8, height*13/16);
+  }
+  if (key == '=' || key == '+') {
+    if (z < 1.5)
+      z+=.1;
+    zoom = (float)Math.exp(z);
+  }
+  if (key == '-' || key == '_') {
+    if (z > -1.5)
+      z-=.1;
+    zoom = (float)Math.exp(z);
   }
 }
 
@@ -202,6 +224,19 @@ void contactStarted(FContact contact) {
     ellipse(contact.getX(), contact.getY(), 20, 20);
     
     doDamage(contact);
+  }
+  //Bouncing!!!
+  else if (contact.getBody1() instanceof FCircle) {
+    if (abs(contact.getBody1().getX()-width) > width*96/100)
+      contact.getBody1().setVelocity(-contact.getBody1().getVelocityX(), contact.getBody1().getVelocityY());
+    if (abs(contact.getBody1().getY()-height) > height*96/100)
+      contact.getBody1().setVelocity(contact.getBody1().getVelocityX(), -contact.getBody1().getVelocityY());
+  }
+  else if (contact.getBody2() instanceof FCircle) {
+    if (abs(contact.getBody2().getX()-width) > width*96/100)
+      contact.getBody2().setVelocity(-contact.getBody2().getVelocityX(), contact.getBody2().getVelocityY());
+    if (abs(contact.getBody2().getY()-height) > height*96/100)
+      contact.getBody2().setVelocity(contact.getBody2().getVelocityX(), -contact.getBody2().getVelocityY());
   }
 }
 
@@ -297,4 +332,12 @@ void giveBasicBody(Ship s) {
   s.addModule(new ThrusterModule(), new PVector(0, -3), 0);
   
   s.addModule(new WeaponModule(), new PVector(0, 1), PI);
+}
+
+PVector translateMouse() {
+  PVector mousePos = new PVector(mouseX/zoom, mouseY/zoom);
+  mousePos.add(-width/2/zoom, -height/2/zoom);
+  mousePos.rotate(player.getRotation()+PI);
+  mousePos.add(player.getX(), player.getY());
+  return mousePos;
 }
