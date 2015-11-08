@@ -3,7 +3,7 @@ import fisica.*;
 
 FWorldModified world;
 Ship player;
-Ship dummy;
+SmartShip dummy;
 
 boolean showGrid;
 
@@ -33,7 +33,7 @@ void setup() {
   player.setGrabbable(false);
   world.add(player);
   
-  dummy = new Ship();
+  dummy = new SmartShip();
   dummy.setPosition(width/4, height);
   dummy.setRotation(-PI/2);
   giveBasicBody(dummy);
@@ -57,7 +57,7 @@ void setup() {
   frame = 0;
   z = 0;
   zoom = (float)Math.exp(z);
-  snapToShipRotation = true;
+  snapToShipRotation = false;
 }
 
 void draw() {
@@ -89,6 +89,7 @@ void draw() {
   
   world.step();
   player.update();
+  dummy.update();
   
   if (showGrid) {
     float closestPos = 9999;
@@ -292,7 +293,7 @@ void doDamage(FContact contact) {
   }
   else return;
   
-  if (hitMod instanceof Ship) {
+  if (hitMod instanceof SmartShip) {
     try { //Module finding is not perfect so try-catch prevent crashes
       hitMod = dummy.grid.findModuleAt(contact.getX(), contact.getY());
       hitMod.hp -= (new PVector(bullet.getVelocityX(), bullet.getVelocityY()).mag() * bullet.getMass());
@@ -301,7 +302,10 @@ void doDamage(FContact contact) {
         world.remove(dummy);
         
         if (!dummy.equals(hitMod)) {
-          dummy = dummy.removeModule(hitMod);
+          SmartShip temp = (SmartShip)(dummy.removeModule(hitMod));
+          temp.hysteresis = dummy.hysteresis;
+          temp.lastToR = dummy.lastToR;
+          dummy = temp;
           if (dummy.grid.modules.get(0) instanceof Ship)
             world.add(dummy);
           fill(50);
@@ -314,7 +318,7 @@ void doDamage(FContact contact) {
       }
     } catch(Exception e) {}
   }
-  else{
+  else if (!(hitMod instanceof Ship)){
     hitMod.hp -= (new PVector(bullet.getVelocityX(), bullet.getVelocityY()).mag() * bullet.getMass());
     if (hitMod.hp <= 0) {
       world.remove(hitMod);
