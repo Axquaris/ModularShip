@@ -30,12 +30,6 @@ class WeaponModule extends Module{
       recoilOffset.rotate(ship.getRotation());
       ship.addForce(-force.x, -force.y, recoilOffset.x, recoilOffset.y);
       
-      /*PVector f = new PVector(force.x, force.y);
-      f.rotate(orientation);
-      f.rotate(ship.getRotation());
-      PVector p = new PVector(position.x, position.y);
-      p.rotate(ship.getRotation());
-      ship.addForce(f.x, f.y, p.x, p.y);*/
       gunCooldown = 10;
       return bullet;
     }
