@@ -234,7 +234,7 @@ void contactStarted(FContact contact) {
     fill(170, 0, 0);
     ellipse(contact.getX(), contact.getY(), 20, 20);
     
-    doDamage(contact);
+    //doDamage(contact); //Disable to prevent phantom glitch
   }
   //Bouncing!!!
   else if (contact.getBody1() instanceof FCircle) {

@@ -1,28 +1,23 @@
 
 class SmartShip extends Ship {
   
-  //Angle Sensor Vars
-  //int hysteresis;
-  //float lastToR;
-  
   SmartShip() {
     super();
-    
-    //Angle Sensor Vars
-    //hysteresis = 0;
-    //lastToR = 0;
   }
   
   void update() {
     super.update();
-    float toR = angleToPlayer();
-    if (frame % 3 == 0) {
-      if (toR > 0)
+    float toRot = angleToPlayer();
+    float toDist = distanceToPlayer();
+    if (frame % 1 == 0) {
+      if (toRot > 0)
         thrusterSystem.fireThrusters("D");
-      else if (toR < 0)
+      else if (toRot < 0)
         thrusterSystem.fireThrusters("A");
     }
-    //if (abs(toR) < PI/8) fire(world); //DEBUGGING
+    if (toDist > 500 && abs(toRot) < PI/8)
+      thrusterSystem.fireThrusters("W");
+    if (abs(toRot) < PI/8 && toDist < 1000) fire(world);
   }
   
   //Sensors
@@ -31,8 +26,16 @@ class SmartShip extends Ship {
     if (thisR < -PI) thisR += PI*2;
     else if (thisR > PI) thisR -= PI*2;
     float toR = atan2(player.getY()-getY(), player.getX()-getX()) - thisR;
-    println(degrees(toR));
+    if (toR < -PI) toR += PI*2;
+    else if (toR > PI) toR -= PI*2;
+    //println(degrees(toR)); //DEBUG
     
     return toR;
+  }
+  
+  float distanceToPlayer() {
+    PVector dist = new PVector(getX(), getY());
+    dist.sub(new PVector(player.getX(), player.getY()));
+    return dist.mag();
   }
 }
