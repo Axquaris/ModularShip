@@ -234,7 +234,7 @@ void contactStarted(FContact contact) {
     fill(170, 0, 0);
     ellipse(contact.getX(), contact.getY(), 20, 20);
     
-    //doDamage(contact); //Disable to prevent phantom glitch
+    doDamage(contact); //Disable to prevent phantom glitch
   }
   //Bouncing!!!
   else if (contact.getBody1() instanceof FCircle) {
@@ -301,20 +301,23 @@ void doDamage(FContact contact) {
       if (hitMod.hp <= 0) {
         world.remove(dummy);
         
-        if (!dummy.equals(hitMod)) {
-          SmartShip temp = (SmartShip)(dummy.removeModule(hitMod));
-          //temp.hysteresis = dummy.hysteresis;
-          //temp.lastToR = dummy.lastToR;
-          dummy = temp;
-          if (dummy.grid.modules.get(0) instanceof Ship)
-            world.add(dummy);
+        //SmartShip temp = (SmartShip)(dummy.removeModule(hitMod));
+        //temp.setPosition(dummy.getX(), dummy.getY());
+        //temp.setVelocity(dummy.getVelocityX(), dummy.getVelocityY());
+        //temp.setAngularVelocity(dummy.getAngularVelocity());
+        
+        //dummy = temp;
+        dummy.removeModule(hitMod);
+        if (dummy.grid.modules.size() > 0) {
+          world.add(dummy);
           fill(50);
           ellipse(contact.getX(), contact.getY(), 30, 30);
         }
         else {
           fill(50);
           ellipse(dummy.getX(), dummy.getY(), 60, 60);
-        } 
+          world.remove(dummy);
+        }
       }
     } catch(Exception e) {}
   }
