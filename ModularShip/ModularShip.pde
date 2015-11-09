@@ -55,7 +55,7 @@ void setup() {
   
   //Camera Variables
   frame = 0;
-  z = 0;
+  z = -.2;
   zoom = (float)Math.exp(z);
   snapToShipRotation = false;
 }
@@ -303,8 +303,8 @@ void doDamage(FContact contact) {
         
         if (!dummy.equals(hitMod)) {
           SmartShip temp = (SmartShip)(dummy.removeModule(hitMod));
-          temp.hysteresis = dummy.hysteresis;
-          temp.lastToR = dummy.lastToR;
+          //temp.hysteresis = dummy.hysteresis;
+          //temp.lastToR = dummy.lastToR;
           dummy = temp;
           if (dummy.grid.modules.get(0) instanceof Ship)
             world.add(dummy);
