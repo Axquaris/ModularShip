@@ -39,30 +39,6 @@ class SmartShip extends Ship {
     return dist.mag();
   }
   
-  //EDIT
-  //Creates new ship as replacement
-  /*SmartShip removeModusle(Module mod) {
-    grid.removeModule(mod);
-    
-    SmartShip child = new SmartShip();
-    child.grid = grid;
-    child.thrusterSystem = thrusterSystem;
-    child.weaponSystem = weaponSystem;
-    for (Module m: child.grid.modules) {
-      if (!(m instanceof Ship))
-        m.attachTo(child, (int)m.gridPos.x*40, (int)m.gridPos.y*40, m.gridRotation);
-    }
-    child.thrusterSystem.updateWASDQE();
-    
-    child.setPosition(getX(), getY());
-    child.setVelocity(getVelocityX(), getVelocityY());
-    child.setRotation(getRotation());
-    child.setAngularVelocity(getAngularVelocity());
-    
-    child.grid.modules.set(0, child);
-    child.grid.modulePositions.set(0, new PVector(0, 0));
-    return child;
-  }*/
   SmartShip removeModule(Module mod) {
     grid.removeModule(mod);
     if (mod instanceof ThrusterModule)
@@ -79,21 +55,6 @@ class SmartShip extends Ship {
         m.attachTo(child, (int)m.gridPos.x*40, (int)m.gridPos.y*40, m.gridRotation);
     }
     child.thrusterSystem.updateWASDQE();
-    /*for (Module m: child.grid.modules) {
-      if (!(m instanceof Ship)) {
-        child.addModule(m, new PVector(m.gridPos.x*40, m.gridPos.y*40), m.gridRotation);
-        //if (m instanceof ThrusterModule){
-          //((ThrusterModule)m).setThrusterOrientation(rotation);
-          //((ThrusterModule)m).updateThrusterPos((int)position.x*40, (int)position.y*40);
-          
-          //thrusterSystem.addThruster((ThrusterModule)m);
-        //}
-        
-        //if (m instanceof WeaponModule){
-          //weaponSystem.addWeapon((WeaponModule)m);
-        //}
-      }
-    }*/
     child.setPosition(getX(), getY());
     child.setVelocity(getVelocityX(), getVelocityY());
     child.setRotation(getRotation());

@@ -4,6 +4,7 @@ import fisica.*;
 FWorldModified world;
 Ship player;
 SmartShip dummy;
+boolean dummyDead;
 
 boolean showGrid;
 
@@ -38,6 +39,7 @@ void setup() {
   dummy.setRotation(-PI/2);
   giveBasicBody(dummy);
   world.add(dummy);
+  dummyDead = false;
   
   int size = 20;
   for (float i = size; i <= width*2-size; i += size*4) {
@@ -89,7 +91,8 @@ void draw() {
   
   world.step();
   player.update();
-  dummy.update();
+  if (!dummyDead)
+    dummy.update();
   
   if (showGrid) {
     float closestPos = 9999;
@@ -301,16 +304,19 @@ void doDamage(FContact contact) {
       if (hitMod.hp <= 0) {
         world.remove(dummy);
         
-        dummy = dummy.removeModule(hitMod);
-        if (dummy.grid.modules.size() > 0) {
+        if (!(hitMod instanceof SmartShip)){
+          dummy = dummy.removeModule(hitMod);
+          
           world.add(dummy);
           fill(50);
           ellipse(contact.getX(), contact.getY(), 30, 30);
         }
         else {
+          dummy = null;
+          dummyDead = true;
+          
           fill(50);
           ellipse(dummy.getX(), dummy.getY(), 60, 60);
-          world.remove(dummy);
         }
       }
     } catch(Exception e) {}

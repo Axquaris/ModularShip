@@ -75,8 +75,8 @@ class Ship extends ThrusterModule {
     thrusterSystem.updateWASDQE();
   }
   
-  //Creates new ship as replacement
-  Ship removeModule(Module mod) {
+  //TODO rewrite besed on SmartShip
+  /*Ship removeModule(Module mod) {
     grid.removeModule(mod);
     
     Ship child = new Ship();
@@ -97,7 +97,7 @@ class Ship extends ThrusterModule {
     //child.grid.modules.set(0, child);
     //child.grid.modulePositions.set(0, new PVector(0, 0));
     return child;
-  }
+  }*/
   
   void drawGrid() {
     for (PVector pos: grid.openPositions) {
