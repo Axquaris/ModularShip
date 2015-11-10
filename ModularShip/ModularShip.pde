@@ -210,6 +210,16 @@ void keyPressed() {
   if (key == 'c' || key == 'C') {
     snapToShipRotation = !snapToShipRotation;
   }
+  if (key == 'v' || key == 'V') {
+    if (dummyDead) {
+      dummy = new SmartShip();
+      dummy.setPosition(width/4, height);
+      dummy.setRotation(-PI/2);
+      giveBasicBody(dummy);
+      world.add(dummy);
+      dummyDead = false;
+    }
+  }
 }
 
 void keyReleased() {
