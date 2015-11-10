@@ -13,12 +13,24 @@ Right now you can add modules you your ship, fly around, and test firing on inde
 5. Play!
 
 ### How to play the game
-* The movement controlls are WASD with Q and E controlling strafing
-* N spawns a new structural module
-* M spawns a thruster module
-* COMMA spawns a weapon module
-* B loads a preset "basic" ship if you press it before adding modules to your ship
+* **Movement**
+  * The movement controlls are WASD with Q and E controlling strafing
+* **Building**
+  * N spawns a new structural module
+  * M spawns a thruster module
+  * COMMA spawns a weapon module
+  * MOUSE to move modules around
+  * B loads a preset "basic" ship if you press it before adding modules to your ship
+* **Camera**
+  * + and - zoom in and out
+  * c toggles whether the camera rotates with the ship
 
-### GIF!
+### GIFS!
+[![https://gyazo.com/4d62fd03fb35438cfb55eecfcbf59465](https://i.gyazo.com/4d62fd03fb35438cfb55eecfcbf59465.gif)](https://gyazo.com/4d62fd03fb35438cfb55eecfcbf59465)
+[![https://gyazo.com/45a0756dab8df80e51a267bc145d5eca](https://i.gyazo.com/45a0756dab8df80e51a267bc145d5eca.gif)](https://gyazo.com/45a0756dab8df80e51a267bc145d5eca)
+
+
+
+### Older GIFS
 [![https://gyazo.com/fc4a24b8096642b714e5015139dd1ed4](https://i.gyazo.com/fc4a24b8096642b714e5015139dd1ed4.gif)](https://gyazo.com/fc4a24b8096642b714e5015139dd1ed4)
 [![https://gyazo.com/e05bd9ed4e4714308f5521642ab61a0a](https://i.gyazo.com/e05bd9ed4e4714308f5521642ab61a0a.gif)](https://gyazo.com/e05bd9ed4e4714308f5521642ab61a0a)
