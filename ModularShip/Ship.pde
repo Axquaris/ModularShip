@@ -75,29 +75,33 @@ class Ship extends ThrusterModule {
     thrusterSystem.updateWASDQE();
   }
   
-  //TODO rewrite besed on SmartShip
-  /*Ship removeModule(Module mod) {
+  Ship removeModule(Module mod) {
     grid.removeModule(mod);
+    if (mod instanceof ThrusterModule)
+      thrusterSystem.removeThruster((ThrusterModule)mod);
+    else if (mod instanceof WeaponModule)
+      weaponSystem.removeWeapon((WeaponModule)mod);
     
     Ship child = new Ship();
-    //child.grid = grid;
-    //child.thrusterSystem = thrusterSystem;
-    //child.weaponSystem = weaponSystem;
-    for (Module m: grid.modules) {
+    child.grid = grid;
+    child.thrusterSystem = thrusterSystem;
+    child.weaponSystem = weaponSystem;
+    for (Module m: child.grid.modules) {
       if (!(m instanceof Ship))
-        child.addModule(m, new PVector(m.gridPos.x*40, m.gridPos.y*40), m.gridRotation);
+        m.attachTo(child, (int)m.gridPos.x*40, (int)m.gridPos.y*40, m.gridRotation);
     }
-    //child.thrusterSystem.updateWASDQE();
-    
+    child.thrusterSystem.updateWASDQE();
     child.setPosition(getX(), getY());
     child.setVelocity(getVelocityX(), getVelocityY());
     child.setRotation(getRotation());
     child.setAngularVelocity(getAngularVelocity());
+    child.grid.modules.set(0, child);
     
-    //child.grid.modules.set(0, child);
-    //child.grid.modulePositions.set(0, new PVector(0, 0));
+    child.grid.modulePositions.set(0, new PVector(0, 0));
+    child.thrusterSystem.modules.set(0, child);
+    
     return child;
-  }*/
+  }
   
   void drawGrid() {
     for (PVector pos: grid.openPositions) {

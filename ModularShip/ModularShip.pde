@@ -188,29 +188,36 @@ void keyPressed() {
     m.setPosition(width*31/16, height*9/8);
     world.add(m);
   }
-  if (key == 'r' || key == 'R') {
+  if (key == 'r' || key == 'R') { //Rotate orientation of added modules
     newModRot += 90;
     if (newModRot >= 360) newModRot = 0;
   }
-  if ((key == 'b' || key == 'B') && player.grid.modules.size() == 1) {
+  if ((key == 'b' || key == 'B') && player.grid.modules.size() == 1) { //Give player basicbody
     world.remove(player);
     giveBasicBody(player);
     world.add(player);
   }
-  if (key == '=' || key == '+') {
+  /*if (key == 'z' || key == 'Z') { //Respawn [NOT WORKING]
+    player = new Ship();
+    player.setPosition(width*7/4, height);
+    player.setRotation(PI/2);
+    player.setGrabbable(false);
+    world.add(player);
+  }*/
+  if (key == '=' || key == '+') { //Zoom in
     if (z < 1.5)
       z+=.1;
     zoom = (float)Math.exp(z);
   }
-  if (key == '-' || key == '_') {
+  if (key == '-' || key == '_') { //Zoom out
     if (z > -1.5)
       z-=.1;
     zoom = (float)Math.exp(z);
   }
-  if (key == 'c' || key == 'C') {
+  if (key == 'c' || key == 'C') { //Togge camera snap to ship rotation
     snapToShipRotation = !snapToShipRotation;
   }
-  if (key == 'v' || key == 'V') {
+  if (key == 'v' || key == 'V') { //Respawn dummy
     if (dummyDead) {
       dummy = new SmartShip();
       dummy.setPosition(width/4, height);
@@ -331,7 +338,24 @@ void doDamage(FContact contact) {
       }
     } catch(Exception e) {}
   }
-  else if (!(hitMod instanceof Ship)){
+  else if (hitMod instanceof Ship){
+    try { //Module finding is not perfect so try-catch prevent crashes
+      hitMod = player.grid.findModuleAt(contact.getX(), contact.getY());
+      if (!(hitMod instanceof Ship)) {
+        hitMod.hp -= (new PVector(bullet.getVelocityX(), bullet.getVelocityY()).mag() * bullet.getMass())/5;
+        
+        if (hitMod.hp <= 0) {
+          world.remove(player);
+          player = player.removeModule(hitMod);
+            
+          world.add(player);
+          fill(50);
+          ellipse(contact.getX(), contact.getY(), 30, 30);
+        }
+      }
+    } catch(Exception e) {}
+  }
+  else {
     hitMod.hp -= (new PVector(bullet.getVelocityX(), bullet.getVelocityY()).mag() * bullet.getMass());
     if (hitMod.hp <= 0) {
       world.remove(hitMod);
