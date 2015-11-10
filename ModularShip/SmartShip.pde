@@ -60,6 +60,7 @@ class SmartShip extends Ship {
     child.setRotation(getRotation());
     child.setAngularVelocity(getAngularVelocity());
     child.grid.modules.set(0, child);
+    
     child.grid.modulePositions.set(0, new PVector(0, 0));
     child.thrusterSystem.modules.set(0, child);
     

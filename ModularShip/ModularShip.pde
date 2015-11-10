@@ -1,4 +1,8 @@
-
+/*
+  TODO fix bug that changes gun firing point to spawnpoint after gun is damaged (stops after gun is destroyed)
+  
+  
+ */
 import fisica.*;
 
 FWorldModified world;
@@ -34,12 +38,8 @@ void setup() {
   player.setGrabbable(false);
   world.add(player);
   
-  dummy = new SmartShip();
-  dummy.setPosition(width/4, height);
-  dummy.setRotation(-PI/2);
-  giveBasicBody(dummy);
-  world.add(dummy);
-  dummyDead = false;
+  dummy = null;
+  dummyDead = true;
   
   int size = 20;
   for (float i = size; i <= width*2-size; i += size*4) {
