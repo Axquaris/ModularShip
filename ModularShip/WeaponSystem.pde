@@ -11,6 +11,9 @@ class WeaponSystem {
   void addWeapon(WeaponModule wMod) {
     modules.add(wMod);
   }
+  void removeWeapon(WeaponModule wMod) {
+    modules.remove(wMod);
+  }
   
   void fire(FWorld world) {
     for (WeaponModule w: modules) {

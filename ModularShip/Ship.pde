@@ -80,22 +80,22 @@ class Ship extends ThrusterModule {
     grid.removeModule(mod);
     
     Ship child = new Ship();
-    child.grid = grid;
-    child.thrusterSystem = thrusterSystem;
-    child.weaponSystem = weaponSystem;
-    for (Module m: child.grid.modules) {
+    //child.grid = grid;
+    //child.thrusterSystem = thrusterSystem;
+    //child.weaponSystem = weaponSystem;
+    for (Module m: grid.modules) {
       if (!(m instanceof Ship))
-        m.attachTo(child, (int)m.gridPos.x*40, (int)m.gridPos.y*40, m.gridRotation);
+        child.addModule(m, new PVector(m.gridPos.x*40, m.gridPos.y*40), m.gridRotation);
     }
-    child.thrusterSystem.updateWASDQE();
+    //child.thrusterSystem.updateWASDQE();
     
     child.setPosition(getX(), getY());
     child.setVelocity(getVelocityX(), getVelocityY());
     child.setRotation(getRotation());
     child.setAngularVelocity(getAngularVelocity());
     
-    child.grid.modules.set(0, child);
-    child.grid.modulePositions.set(0, new PVector(0, 0));
+    //child.grid.modules.set(0, child);
+    //child.grid.modulePositions.set(0, new PVector(0, 0));
     return child;
   }
   

@@ -301,13 +301,7 @@ void doDamage(FContact contact) {
       if (hitMod.hp <= 0) {
         world.remove(dummy);
         
-        //SmartShip temp = (SmartShip)(dummy.removeModule(hitMod));
-        //temp.setPosition(dummy.getX(), dummy.getY());
-        //temp.setVelocity(dummy.getVelocityX(), dummy.getVelocityY());
-        //temp.setAngularVelocity(dummy.getAngularVelocity());
-        
-        //dummy = temp;
-        dummy.removeModule(hitMod);
+        dummy = dummy.removeModule(hitMod);
         if (dummy.grid.modules.size() > 0) {
           world.add(dummy);
           fill(50);
