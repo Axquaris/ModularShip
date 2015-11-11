@@ -340,9 +340,10 @@ void doDamage(FContact contact) {
   }
   else if (hitMod instanceof Ship){
     try { //Module finding is not perfect so try-catch prevent crashes
-      hitMod = player.grid.findModuleAt(contact.getX(), contact.getY());
+      hitMod = player.grid.findModuleAt(contact.getX(), contact.getY()); //<>//
+      
       if (!(hitMod instanceof Ship)) {
-        hitMod.hp -= (new PVector(bullet.getVelocityX(), bullet.getVelocityY()).mag() * bullet.getMass())/5;
+        hitMod.hp -= (new PVector(bullet.getVelocityX(), bullet.getVelocityY()).mag() * bullet.getMass())/2;
         
         if (hitMod.hp <= 0) {
           world.remove(player);
@@ -367,6 +368,8 @@ void doDamage(FContact contact) {
 }
 
 void giveBasicBody(Ship s) {
+  s.weaponSystem = new WeaponSystem(s);
+  
   s.addModule(new Module(), new PVector(1, 0), 0);
   s.addModule(new Module(), new PVector(-1, 0), 0);
   s.addModule(new Module(), new PVector(0, -1), 0);

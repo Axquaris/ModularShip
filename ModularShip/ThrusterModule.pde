@@ -8,7 +8,7 @@ class ThrusterModule extends Module{
     thrusters = new ArrayList<Thruster>();
     thrusters.add(new Thruster(new PVector(0, 0), new PVector(0, 1000)));
     
-    hp = 50;
+    hp = 80;
   }
   
   void attachTo(Ship ship, int x, int y, float r) {

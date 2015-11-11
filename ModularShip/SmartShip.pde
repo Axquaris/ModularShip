@@ -28,7 +28,6 @@ class SmartShip extends Ship {
     float toR = atan2(player.getY()-getY(), player.getX()-getX()) - thisR;
     if (toR < -PI) toR += PI*2;
     else if (toR > PI) toR -= PI*2;
-    //println(degrees(toR)); //DEBUG
     
     return toR;
   }
@@ -47,6 +46,11 @@ class SmartShip extends Ship {
       weaponSystem.removeWeapon((WeaponModule)mod);
     
     SmartShip child = new SmartShip();
+    child.setPosition(getX(), getY());
+    child.setVelocity(getVelocityX(), getVelocityY());
+    child.setRotation(getRotation());
+    child.setAngularVelocity(getAngularVelocity());
+    
     child.grid = grid;
     child.thrusterSystem = thrusterSystem;
     child.weaponSystem = weaponSystem;
@@ -55,14 +59,11 @@ class SmartShip extends Ship {
         m.attachTo(child, (int)m.gridPos.x*40, (int)m.gridPos.y*40, m.gridRotation);
     }
     child.thrusterSystem.updateWASDQE();
-    child.setPosition(getX(), getY());
-    child.setVelocity(getVelocityX(), getVelocityY());
-    child.setRotation(getRotation());
-    child.setAngularVelocity(getAngularVelocity());
-    child.grid.modules.set(0, child);
     
+    child.grid.modules.set(0, child);
     child.grid.modulePositions.set(0, new PVector(0, 0));
     child.thrusterSystem.modules.set(0, child);
+    child.weaponSystem.ship = child;
     
     return child;
   }

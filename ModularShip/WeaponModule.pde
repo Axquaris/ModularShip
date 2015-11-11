@@ -6,7 +6,7 @@ class WeaponModule extends Module{
     super();
     
     gunCooldown = 0;
-    hp = 20; //Should be 50 but this is a quick fix 4 gun bug
+    hp = 120;
   }
   
   Bullet fire(Ship ship) {
