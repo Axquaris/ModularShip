@@ -20,24 +20,41 @@ class SmartShip extends Ship {
     if (abs(toRot) < PI/8 && toDist < 1000) fire(world);
   }
   
-  //Sensors
+  /*
+    SENSORS
+      These functions return information about how the ship sees something around it
+      Includes: angle to player, distance to player
+  */
   float angleToPlayer() {
-    float thisR = radians((int)(degrees(getRotation())) % 360) + PI/2;
-    if (thisR < -PI) thisR += PI*2;
-    else if (thisR > PI) thisR -= PI*2;
-    float toR = atan2(player.getY()-getY(), player.getX()-getX()) - thisR;
-    if (toR < -PI) toR += PI*2;
-    else if (toR > PI) toR -= PI*2;
+    PVector sPos = sensePosition(player.getX(), player.getY());
+    float toRot = atan2(sPos.x, sPos.y);
     
-    return toR;
+    //Returns PI to -PI
+    return -toRot;
   }
   
   float distanceToPlayer() {
-    PVector dist = new PVector(getX(), getY());
-    dist.sub(new PVector(player.getX(), player.getY()));
-    return dist.mag();
+    PVector sPos = sensePosition(player.getX(), player.getY());
+    return sPos.mag();
   }
   
+  /*
+    INTERPRETERS
+      These functions take in data and return how the ship senses it,
+        they also serve as submethods for the SENSOR methods
+      Includes: x, y or PVector to position
+  */
+  PVector sensePosition(PVector coords) {
+    coords.add(-getX(), -getY());
+    coords.rotate(-getRotation());
+    return coords;
+  }
+
+  PVector sensePosition(float x, float y) {
+    return sensePosition(new PVector(x, y));
+  }
+  
+  //Small modification of Ship class's removeModule()
   SmartShip removeModule(Module mod) {
     grid.removeModule(mod);
     if (mod instanceof ThrusterModule)

@@ -1,8 +1,9 @@
 /*
-  TODO fix bug that changes gun firing point to spawnpoint after gun is damaged (stops after gun is destroyed)
-  
-  
- */
+  TODO:
+   - fix giveBasicBody(Ship) to properly add modules (use removeModule method???)
+   - fix respawn button [Z]
+   - implement INTERPRET methods in SmartShip and improve SENSOR methods
+*/
 import fisica.*;
 
 FWorldModified world;
@@ -114,10 +115,10 @@ void draw() {
     if(newModPos != null) {
       boolean thrusterCondition = (!(grabbedMod instanceof ThrusterModule) 
           || (grabbedMod instanceof ThrusterModule) 
-          && player.grid.thrusterAttachable((int)newModPos.x, (int)newModPos.y ,(int)newModRot));//Makes sure that if the mod is a thruster it can be attached
+          && player.grid.thrusterAttachable((int)newModPos.x, (int)newModPos.y ,(int)newModRot)); //Makes sure that if the mod is a thruster it can be attached
       boolean weaponCondition = (!(grabbedMod instanceof WeaponModule) 
           || (grabbedMod instanceof WeaponModule) 
-          && player.grid.thrusterAttachable((int)newModPos.x, (int)newModPos.y ,(int)newModRot));//Makes sure that if the mod is a thruster it can be attached
+          && player.grid.thrusterAttachable((int)newModPos.x, (int)newModPos.y ,(int)newModRot)); //Makes sure that if the mod is a thruster it can be attached
           
       if (closestPos >= 40 || !thrusterCondition || !weaponCondition) {
         grabbedMod.drawGhost(player, newModPos, radians(newModRot), 100);
@@ -140,7 +141,7 @@ void mousePressed() {
   }
 }
 
-void mouseReleased() {
+void mouseReleased() { //<>//
   if (showGrid) {
     showGrid = false;
      //<>//
@@ -214,7 +215,7 @@ void keyPressed() {
       z-=.1;
     zoom = (float)Math.exp(z);
   }
-  if (key == 'c' || key == 'C') { //Togge camera snap to ship rotation
+  if (key == 'c' || key == 'C') { //Toggle camera snap to ship rotation
     snapToShipRotation = !snapToShipRotation;
   }
   if (key == 'v' || key == 'V') { //Respawn dummy
@@ -337,7 +338,7 @@ void doDamage(FContact contact) {
         }
       }
     } catch(Exception e) {}
-  }
+  } //<>//
   else if (hitMod instanceof Ship){
     try { //Module finding is not perfect so try-catch prevent crashes
       hitMod = player.grid.findModuleAt(contact.getX(), contact.getY()); //<>//
@@ -367,8 +368,9 @@ void doDamage(FContact contact) {
   } 
 }
 
+
 void giveBasicBody(Ship s) {
-  s.weaponSystem = new WeaponSystem(s);
+  s.weaponSystem = new WeaponSystem(s); 
   
   s.addModule(new Module(), new PVector(1, 0), 0);
   s.addModule(new Module(), new PVector(-1, 0), 0);
