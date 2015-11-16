@@ -30,8 +30,8 @@ class Ship extends ThrusterModule {
     weaponSystem.update();
   }
   
-  void fire(FWorld world) {
-    weaponSystem.fire(world);
+  void fire() {
+    weaponSystem.fire();
     
     if (gunCooldown == 0 && !grid.positionUsed(0, 1)) {
       PVector force = new PVector(0, 1);
@@ -75,11 +75,19 @@ class Ship extends ThrusterModule {
     thrusterSystem.updateWASDQE();
   }
   
-  //Creates new ship as replacement
   Ship removeModule(Module mod) {
     grid.removeModule(mod);
+    if (mod instanceof ThrusterModule)
+      thrusterSystem.removeThruster((ThrusterModule)mod);
+    else if (mod instanceof WeaponModule)
+      weaponSystem.removeWeapon((WeaponModule)mod);
     
     Ship child = new Ship();
+    child.setPosition(getX(), getY());
+    child.setVelocity(getVelocityX(), getVelocityY());
+    child.setRotation(getRotation());
+    child.setAngularVelocity(getAngularVelocity());
+    
     child.grid = grid;
     child.thrusterSystem = thrusterSystem;
     child.weaponSystem = weaponSystem;
@@ -89,13 +97,11 @@ class Ship extends ThrusterModule {
     }
     child.thrusterSystem.updateWASDQE();
     
-    child.setPosition(getX(), getY());
-    child.setVelocity(getVelocityX(), getVelocityY());
-    child.setRotation(getRotation());
-    child.setAngularVelocity(getAngularVelocity());
-    
     child.grid.modules.set(0, child);
     child.grid.modulePositions.set(0, new PVector(0, 0));
+    child.thrusterSystem.modules.set(0, child);
+    child.weaponSystem.ship = child;
+    
     return child;
   }
   

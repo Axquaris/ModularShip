@@ -1,0 +1,2 @@
+$ cat .gitattributes
+MOdularShip/AxNet_Lib.pde linguist-vendored

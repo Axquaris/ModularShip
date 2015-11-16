@@ -18,7 +18,7 @@ class Module extends FCompound {
     setAngularDamping(1);
     setDensity(0.1);
     setRotation(radians(180)); //Rotate Properly
-    hp = 100;
+    hp = 200;
     
     //Create Body
     createBody();

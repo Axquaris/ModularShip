@@ -26,6 +26,13 @@ class ThrusterSystem {
     updateWASDQE();
   }
   
+  void removeThruster(ThrusterModule tMod){
+    modules.remove(tMod);
+    for (Thruster t: tMod.thrusters)
+      allThrusters.remove(t);
+    updateWASDQE();
+  }
+  
   void fireThrusters(String str){
     str = str.toUpperCase();
     ArrayList<Thruster> firedThrusters = new ArrayList<Thruster>();

@@ -1,9 +1,15 @@
-
+/*
+  TODO:
+   - fix giveBasicBody(Ship) to properly add modules (use removeModule method???)
+   - fix respawn button [Z]
+   - implement INTERPRET methods in SmartShip and improve SENSOR methods
+*/
 import fisica.*;
 
 FWorldModified world;
 Ship player;
-Ship dummy;
+SmartShip dummy;
+boolean dummyDead;
 
 boolean showGrid;
 
@@ -33,11 +39,8 @@ void setup() {
   player.setGrabbable(false);
   world.add(player);
   
-  dummy = new Ship();
-  dummy.setPosition(width/4, height);
-  dummy.setRotation(-PI/2);
-  giveBasicBody(dummy);
-  world.add(dummy);
+  dummy = null;
+  dummyDead = true;
   
   int size = 20;
   for (float i = size; i <= width*2-size; i += size*4) {
@@ -55,9 +58,9 @@ void setup() {
   
   //Camera Variables
   frame = 0;
-  z = 0;
+  z = -.2;
   zoom = (float)Math.exp(z);
-  snapToShipRotation = true;
+  snapToShipRotation = false;
 }
 
 void draw() {
@@ -84,11 +87,13 @@ void draw() {
     player.thrusterSystem.fireThrusters(f);
   }
   if (keys[6]) {
-    player.fire(world);
+    player.fire();
   }
   
   world.step();
   player.update();
+  if (!dummyDead)
+    dummy.update();
   
   if (showGrid) {
     float closestPos = 9999;
@@ -110,10 +115,10 @@ void draw() {
     if(newModPos != null) {
       boolean thrusterCondition = (!(grabbedMod instanceof ThrusterModule) 
           || (grabbedMod instanceof ThrusterModule) 
-          && player.grid.thrusterAttachable((int)newModPos.x, (int)newModPos.y ,(int)newModRot));//Makes sure that if the mod is a thruster it can be attached
+          && player.grid.thrusterAttachable((int)newModPos.x, (int)newModPos.y ,(int)newModRot)); //Makes sure that if the mod is a thruster it can be attached
       boolean weaponCondition = (!(grabbedMod instanceof WeaponModule) 
           || (grabbedMod instanceof WeaponModule) 
-          && player.grid.thrusterAttachable((int)newModPos.x, (int)newModPos.y ,(int)newModRot));//Makes sure that if the mod is a thruster it can be attached
+          && player.grid.thrusterAttachable((int)newModPos.x, (int)newModPos.y ,(int)newModRot)); //Makes sure that if the mod is a thruster it can be attached
           
       if (closestPos >= 40 || !thrusterCondition || !weaponCondition) {
         grabbedMod.drawGhost(player, newModPos, radians(newModRot), 100);
@@ -136,7 +141,7 @@ void mousePressed() {
   }
 }
 
-void mouseReleased() {
+void mouseReleased() { //<>//
   if (showGrid) {
     showGrid = false;
      //<>//
@@ -184,27 +189,44 @@ void keyPressed() {
     m.setPosition(width*31/16, height*9/8);
     world.add(m);
   }
-  if (key == 'r' || key == 'R') {
+  if (key == 'r' || key == 'R') { //Rotate orientation of added modules
     newModRot += 90;
     if (newModRot >= 360) newModRot = 0;
   }
-  if ((key == 'b' || key == 'B') && player.grid.modules.size() == 1) {
+  if ((key == 'b' || key == 'B') && player.grid.modules.size() == 1) { //Give player basicbody
     world.remove(player);
     giveBasicBody(player);
     world.add(player);
   }
-  if (key == '=' || key == '+') {
+  /*if (key == 'z' || key == 'Z') { //Respawn [NOT WORKING]
+    player = new Ship();
+    player.setPosition(width*7/4, height);
+    player.setRotation(PI/2);
+    player.setGrabbable(false);
+    world.add(player);
+  }*/
+  if (key == '=' || key == '+') { //Zoom in
     if (z < 1.5)
       z+=.1;
     zoom = (float)Math.exp(z);
   }
-  if (key == '-' || key == '_') {
+  if (key == '-' || key == '_') { //Zoom out
     if (z > -1.5)
       z-=.1;
     zoom = (float)Math.exp(z);
   }
-  if (key == 'c' || key == 'C') {
+  if (key == 'c' || key == 'C') { //Toggle camera snap to ship rotation
     snapToShipRotation = !snapToShipRotation;
+  }
+  if (key == 'v' || key == 'V') { //Respawn dummy
+    if (dummyDead) {
+      dummy = new SmartShip();
+      dummy.setPosition(width/4, height); //<>//
+      dummy.setRotation(-PI/2);
+      giveBasicBody(dummy);
+      world.add(dummy);
+      dummyDead = false;
+    }
   }
 }
 
@@ -233,7 +255,7 @@ void contactStarted(FContact contact) {
     fill(170, 0, 0);
     ellipse(contact.getX(), contact.getY(), 20, 20);
     
-    doDamage(contact);
+    doDamage(contact); //Disable to prevent phantom glitch
   }
   //Bouncing!!!
   else if (contact.getBody1() instanceof FCircle) {
@@ -292,7 +314,7 @@ void doDamage(FContact contact) {
   }
   else return;
   
-  if (hitMod instanceof Ship) {
+  if (hitMod instanceof SmartShip) {
     try { //Module finding is not perfect so try-catch prevent crashes
       hitMod = dummy.grid.findModuleAt(contact.getX(), contact.getY());
       hitMod.hp -= (new PVector(bullet.getVelocityX(), bullet.getVelocityY()).mag() * bullet.getMass());
@@ -300,21 +322,42 @@ void doDamage(FContact contact) {
       if (hitMod.hp <= 0) {
         world.remove(dummy);
         
-        if (!dummy.equals(hitMod)) {
+        if (!(hitMod instanceof SmartShip)){
           dummy = dummy.removeModule(hitMod);
-          if (dummy.grid.modules.get(0) instanceof Ship)
-            world.add(dummy);
+          
+          world.add(dummy);
           fill(50);
           ellipse(contact.getX(), contact.getY(), 30, 30);
         }
         else {
+          dummy = null;
+          dummyDead = true;
+          
           fill(50);
           ellipse(dummy.getX(), dummy.getY(), 60, 60);
-        } 
+        }
+      }
+    } catch(Exception e) {}
+  } //<>//
+  else if (hitMod instanceof Ship){
+    try { //Module finding is not perfect so try-catch prevent crashes
+      hitMod = player.grid.findModuleAt(contact.getX(), contact.getY()); //<>//
+      
+      if (!(hitMod instanceof Ship)) {
+        hitMod.hp -= (new PVector(bullet.getVelocityX(), bullet.getVelocityY()).mag() * bullet.getMass())/2;
+        
+        if (hitMod.hp <= 0) {
+          world.remove(player);
+          player = player.removeModule(hitMod);
+            
+          world.add(player);
+          fill(50);
+          ellipse(contact.getX(), contact.getY(), 30, 30);
+        }
       }
     } catch(Exception e) {}
   }
-  else{
+  else {
     hitMod.hp -= (new PVector(bullet.getVelocityX(), bullet.getVelocityY()).mag() * bullet.getMass());
     if (hitMod.hp <= 0) {
       world.remove(hitMod);
@@ -325,7 +368,10 @@ void doDamage(FContact contact) {
   } 
 }
 
+
 void giveBasicBody(Ship s) {
+  s.weaponSystem = new WeaponSystem(s); 
+  
   s.addModule(new Module(), new PVector(1, 0), 0);
   s.addModule(new Module(), new PVector(-1, 0), 0);
   s.addModule(new Module(), new PVector(0, -1), 0);
