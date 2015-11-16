@@ -30,8 +30,8 @@ class Ship extends ThrusterModule {
     weaponSystem.update();
   }
   
-  void fire(FWorld world) {
-    weaponSystem.fire(world);
+  void fire() {
+    weaponSystem.fire();
     
     if (gunCooldown == 0 && !grid.positionUsed(0, 1)) {
       PVector force = new PVector(0, 1);

@@ -79,6 +79,16 @@ public class NeuralNetwork {
   private NeuralLayer[] layers;
   public NeuralLayer output;
   
+  public NeuralNetwork(int numInputs, int numLayers) {
+    input = new Buffer[numInputs];
+    layers = new NeuralLayer[numLayers];
+    
+    for (int i = 0; i < numInputs; i++)
+      input[i] = null;
+    for (int i = 0; i < numLayers; i++)
+      layers[i] = null;
+  }
+  
   public NeuralNetwork(int numInputs, int[] numLayers) {
     input = new Buffer[numInputs];
     layers = new NeuralLayer[numLayers.length];
@@ -97,7 +107,7 @@ public class NeuralNetwork {
   public void process() {
     for (NeuralLayer nl: layers)
       nl.process();
-    output = layers[layers.length];
+    output = layers[layers.length-1];
   }
   
   //Mutator Methods

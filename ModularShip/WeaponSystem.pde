@@ -15,7 +15,7 @@ class WeaponSystem {
     modules.remove(wMod);
   }
   
-  void fire(FWorld world) {
+  void fire() {
     for (WeaponModule w: modules) {
       world.add(w.fire(ship));
     }

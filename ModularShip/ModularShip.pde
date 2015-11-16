@@ -87,7 +87,7 @@ void draw() {
     player.thrusterSystem.fireThrusters(f);
   }
   if (keys[6]) {
-    player.fire(world);
+    player.fire();
   }
   
   world.step();
@@ -221,7 +221,7 @@ void keyPressed() {
   if (key == 'v' || key == 'V') { //Respawn dummy
     if (dummyDead) {
       dummy = new SmartShip();
-      dummy.setPosition(width/4, height);
+      dummy.setPosition(width/4, height); //<>//
       dummy.setRotation(-PI/2);
       giveBasicBody(dummy);
       world.add(dummy);

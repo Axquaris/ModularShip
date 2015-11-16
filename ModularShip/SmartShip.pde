@@ -1,23 +1,79 @@
 
 class SmartShip extends Ship {
   
-  SmartShip() {
+  NeuralNetwork brain;
+  int brainType;
+  final static int NOBRAIN = 0;
+  final static int TURRET = 1;
+  
+  SmartShip(int brainType) {
     super();
+    
+    this.brainType = brainType;
+    switch (brainType) {
+      case NOBRAIN:
+        break;
+      case TURRET:
+        brain = new NeuralNetwork(2, 1);
+        brain.input[0] = new Buffer();
+        brain.input[1] = new Buffer();
+        
+        NeuralLayer layer1 = new NeuralLayer(2);
+        
+        Neuron n1 = new Neuron(1);
+        n1.addInput(brain.input[0], 1);
+        layer1.addNeuron(n1);
+        
+        Neuron n2 = new Neuron(1);
+        n2.addInput(brain.input[1], 1);
+        layer1.addNeuron(n2);
+        
+        brain.addLayer(layer1);
+        break;
+      default: break;
+    }
+    
+  }
+  
+  SmartShip() {
+    this(NOBRAIN);
   }
   
   void update() {
     super.update();
-    float toRot = angleToPlayer();
-    float toDist = distanceToPlayer();
-    if (frame % 1 == 0) {
-      if (toRot > 0)
-        thrusterSystem.fireThrusters("D");
-      else if (toRot < 0)
-        thrusterSystem.fireThrusters("A");
+    
+    switch (brainType) {
+      case NOBRAIN:
+        float toRot = angleToPlayer();
+        float toDist = distanceToPlayer();
+        if (frame % 1 == 0) {
+          if (toRot > 0)
+            thrusterSystem.fireThrusters("D");
+          else if (toRot < 0)
+            thrusterSystem.fireThrusters("A");
+        }
+        if (toDist > 500 && abs(toRot) < PI/8)
+          thrusterSystem.fireThrusters("W");
+        if (abs(toRot) < PI/8 && toDist < 1000) fire();
+        break;
+      case TURRET:
+        //Send brain sensory inputs
+        brain.input[0].output = angleToPlayer()/TWO_PI;
+        brain.input[1].output = 1/pow(distanceToPlayer()/100, 2)/10;
+        
+        //Activate brain
+        brain.process();
+        
+        //Do actions
+        if(brain.output.neurons[0].output < -brain.output.neurons[1].output)
+          thrusterSystem.fireThrusters("A");
+        else if(brain.output.neurons[0].output > brain.output.neurons[1].output)
+          thrusterSystem.fireThrusters("D");
+        else
+          fire();
+        break;
+      default: break;
     }
-    if (toDist > 500 && abs(toRot) < PI/8)
-      thrusterSystem.fireThrusters("W");
-    if (abs(toRot) < PI/8 && toDist < 1000) fire(world);
   }
   
   /*
@@ -62,11 +118,12 @@ class SmartShip extends Ship {
     else if (mod instanceof WeaponModule)
       weaponSystem.removeWeapon((WeaponModule)mod);
     
-    SmartShip child = new SmartShip();
+    SmartShip child = new SmartShip(brainType);
     child.setPosition(getX(), getY());
     child.setVelocity(getVelocityX(), getVelocityY());
     child.setRotation(getRotation());
     child.setAngularVelocity(getAngularVelocity());
+    child.brain = brain;
     
     child.grid = grid;
     child.thrusterSystem = thrusterSystem;
