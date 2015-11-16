@@ -23,14 +23,16 @@ Right now you can add modules you your ship, fly around, and test firing on inde
   * B loads a preset "basic" ship if you press it before adding modules to your ship
 * **Camera**
   * + and - zoom in and out
-  * c toggles whether the camera rotates with the ship
+  * C toggles whether the camera rotates with the ship
+* **Enemy ship**
+  * V to spawn in a hunter (will try to destroy your ship)
 
 ### GIFS!
-[![https://gyazo.com/4d62fd03fb35438cfb55eecfcbf59465](https://i.gyazo.com/4d62fd03fb35438cfb55eecfcbf59465.gif)](https://gyazo.com/4d62fd03fb35438cfb55eecfcbf59465)
-[![https://gyazo.com/45a0756dab8df80e51a267bc145d5eca](https://i.gyazo.com/45a0756dab8df80e51a267bc145d5eca.gif)](https://gyazo.com/45a0756dab8df80e51a267bc145d5eca)
-
-
+[![https://gyazo.com/2292ecafa62b9fafe345c402c8a17d99](https://i.gyazo.com/2292ecafa62b9fafe345c402c8a17d99.gif)](https://gyazo.com/2292ecafa62b9fafe345c402c8a17d99)
+[![https://gyazo.com/efe6e6c9ca6e4b561c413e17868804da](https://i.gyazo.com/efe6e6c9ca6e4b561c413e17868804da.gif)](https://gyazo.com/efe6e6c9ca6e4b561c413e17868804da)
 
 ### Older GIFS
+[![https://gyazo.com/4d62fd03fb35438cfb55eecfcbf59465](https://i.gyazo.com/4d62fd03fb35438cfb55eecfcbf59465.gif)](https://gyazo.com/4d62fd03fb35438cfb55eecfcbf59465)
+[![https://gyazo.com/45a0756dab8df80e51a267bc145d5eca](https://i.gyazo.com/45a0756dab8df80e51a267bc145d5eca.gif)](https://gyazo.com/45a0756dab8df80e51a267bc145d5eca)
 [![https://gyazo.com/fc4a24b8096642b714e5015139dd1ed4](https://i.gyazo.com/fc4a24b8096642b714e5015139dd1ed4.gif)](https://gyazo.com/fc4a24b8096642b714e5015139dd1ed4)
 [![https://gyazo.com/e05bd9ed4e4714308f5521642ab61a0a](https://i.gyazo.com/e05bd9ed4e4714308f5521642ab61a0a.gif)](https://gyazo.com/e05bd9ed4e4714308f5521642ab61a0a)

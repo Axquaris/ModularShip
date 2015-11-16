@@ -2,7 +2,8 @@
   TODO:
    - fix giveBasicBody(Ship) to properly add modules (use removeModule method???)
    - fix respawn button [Z]
-   - implement INTERPRET methods in SmartShip and improve SENSOR methods
+   - better GRAPHICS!!!
+   - module integrity (no more floating modules)
 */
 import fisica.*;
 
@@ -140,10 +141,10 @@ void mousePressed() {
     showGrid = true;
   }
 }
-
+ //<>//
 void mouseReleased() { //<>//
   if (showGrid) {
-    showGrid = false;
+    showGrid = false; //<>//
      //<>//
     if (newModPos != null) {
       PVector oldPos = new PVector(player.getX(), player.getY());
@@ -220,7 +221,7 @@ void keyPressed() {
   }
   if (key == 'v' || key == 'V') { //Respawn dummy
     if (dummyDead) {
-      dummy = new SmartShip();
+      dummy = new SmartShip(); //<>//
       dummy.setPosition(width/4, height); //<>//
       dummy.setRotation(-PI/2);
       giveBasicBody(dummy);
@@ -337,10 +338,10 @@ void doDamage(FContact contact) {
           ellipse(dummy.getX(), dummy.getY(), 60, 60);
         }
       }
-    } catch(Exception e) {}
+    } catch(Exception e) {} //<>//
   } //<>//
   else if (hitMod instanceof Ship){
-    try { //Module finding is not perfect so try-catch prevent crashes
+    try { //Module finding is not perfect so try-catch prevent crashes //<>//
       hitMod = player.grid.findModuleAt(contact.getX(), contact.getY()); //<>//
       
       if (!(hitMod instanceof Ship)) {
