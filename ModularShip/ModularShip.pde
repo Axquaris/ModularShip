@@ -94,7 +94,7 @@ void draw() {
   world.step();
   player.update();
   if (!dummyDead)
-    dummy.update();
+    dummy.update();  //<>//
   
   if (showGrid) {
     float closestPos = 9999;
@@ -141,11 +141,11 @@ void mousePressed() {
     showGrid = true;
   }
 }
- //<>//
-void mouseReleased() { //<>//
+  //<>//
+void mouseReleased() {  //<>//
   if (showGrid) {
-    showGrid = false; //<>//
-     //<>//
+    showGrid = false;  //<>//
+      //<>//
     if (newModPos != null) {
       PVector oldPos = new PVector(player.getX(), player.getY());
       float oldRot = player.getRotation();
@@ -221,12 +221,12 @@ void keyPressed() {
   }
   if (key == 'v' || key == 'V') { //Respawn dummy
     if (dummyDead) {
-      dummy = new SmartShip(); //<>//
-      dummy.setPosition(width/4, height); //<>//
+      dummy = new SmartShip();
+      dummy.setPosition(width/4, height);
       dummy.setRotation(-PI/2);
       giveBasicBody(dummy);
       world.add(dummy);
-      dummyDead = false;
+      dummyDead = false;  //<>//
     }
   }
 }
@@ -325,8 +325,8 @@ void doDamage(FContact contact) {
         
         if (!(hitMod instanceof SmartShip)){
           dummy = dummy.removeModule(hitMod);
-          
           world.add(dummy);
+          
           fill(50);
           ellipse(contact.getX(), contact.getY(), 30, 30);
         }
@@ -338,20 +338,20 @@ void doDamage(FContact contact) {
           ellipse(dummy.getX(), dummy.getY(), 60, 60);
         }
       }
-    } catch(Exception e) {} //<>//
-  } //<>//
-  else if (hitMod instanceof Ship){
-    try { //Module finding is not perfect so try-catch prevent crashes //<>//
-      hitMod = player.grid.findModuleAt(contact.getX(), contact.getY()); //<>//
-      
+    } catch(Exception e) {} 
+  }  //<>//
+  else if (hitMod instanceof Ship){ //<>//
+    try { //Module finding is not perfect so try-catch prevent crashes 
+      hitMod = player.grid.findModuleAt(contact.getX(), contact.getY());  //<>//
+       //<>//
       if (!(hitMod instanceof Ship)) {
         hitMod.hp -= (new PVector(bullet.getVelocityX(), bullet.getVelocityY()).mag() * bullet.getMass())/2;
         
         if (hitMod.hp <= 0) {
           world.remove(player);
           player = player.removeModule(hitMod);
-            
           world.add(player);
+          
           fill(50);
           ellipse(contact.getX(), contact.getY(), 30, 30);
         }

@@ -82,6 +82,8 @@ class Ship extends ThrusterModule {
     else if (mod instanceof WeaponModule)
       weaponSystem.removeWeapon((WeaponModule)mod);
     
+    ArrayList<Module> detachedMods = checkIntegrity();
+    
     Ship child = new Ship();
     child.setPosition(getX(), getY());
     child.setVelocity(getVelocityX(), getVelocityY());
@@ -102,8 +104,86 @@ class Ship extends ThrusterModule {
     child.thrusterSystem.modules.set(0, child);
     child.weaponSystem.ship = child;
     
+    for (Module m: detachedMods) {
+      world.add(m);
+      println("Module added to world");
+    }
     return child;
   }
+  
+  //Ejects all the parts that are not attached to the ship
+  ArrayList<Module> checkIntegrity() {
+    
+    //Find attached parts
+    ArrayList<Module> checkedParts = new ArrayList<Module>();
+    checkedParts.add(this);
+    ArrayList<Module> lastCheckedParts = new ArrayList<Module>();
+    checkedParts.add(this);
+    
+    for (int i = 0; i < lastCheckedParts.size(); i++) {
+      PVector posToCheck = lastCheckedParts.get(i).gridPos;
+      
+      posToCheck.add(1, 0); //East
+      if (grid.positionUsed((int)posToCheck.x, (int)posToCheck.y)) {
+        if ( !checkedParts.contains(grid.getModuleAt((int)posToCheck.x, (int)posToCheck.y)) &&
+             !lastCheckedParts.contains(grid.getModuleAt((int)posToCheck.x, (int)posToCheck.y)) ) {
+          lastCheckedParts.add(grid.getModuleAt((int)posToCheck.x, (int)posToCheck.y));
+        }
+      }
+      posToCheck.add(-1, 1); //North
+      if (grid.positionUsed((int)posToCheck.x, (int)posToCheck.y)) {
+        if ( !checkedParts.contains(grid.getModuleAt((int)posToCheck.x, (int)posToCheck.y)) &&
+             !lastCheckedParts.contains(grid.getModuleAt((int)posToCheck.x, (int)posToCheck.y)) ) {
+          lastCheckedParts.add(grid.getModuleAt((int)posToCheck.x, (int)posToCheck.y));
+        }
+      }
+      posToCheck.add(-1, -1); //West
+      if (grid.positionUsed((int)posToCheck.x, (int)posToCheck.y)) {
+        if ( !checkedParts.contains(grid.getModuleAt((int)posToCheck.x, (int)posToCheck.y)) &&
+             !lastCheckedParts.contains(grid.getModuleAt((int)posToCheck.x, (int)posToCheck.y)) ) {
+          lastCheckedParts.add(grid.getModuleAt((int)posToCheck.x, (int)posToCheck.y));
+        }
+      }
+      posToCheck.add(1, -1); //South
+      if (grid.positionUsed((int)posToCheck.x, (int)posToCheck.y)) {
+        if ( !checkedParts.contains(grid.getModuleAt((int)posToCheck.x, (int)posToCheck.y)) &&
+             !lastCheckedParts.contains(grid.getModuleAt((int)posToCheck.x, (int)posToCheck.y)) ) {
+          lastCheckedParts.add(grid.getModuleAt((int)posToCheck.x, (int)posToCheck.y));
+        }
+      }
+      
+      checkedParts.add(lastCheckedParts.get(i));
+      lastCheckedParts.remove(i);
+    }
+    
+    //Remove loose modules
+    ArrayList<Module> looseMods = new ArrayList<Module>();
+    for (Module m: grid.modules) {
+      if (!checkedParts.contains(m)) {
+        // REMOVE MODULE
+        grid.removeModule(m);
+        if (m instanceof ThrusterModule)
+          thrusterSystem.removeThruster((ThrusterModule)m);
+        else if (m instanceof WeaponModule)
+          weaponSystem.removeWeapon((WeaponModule)m);
+
+        PVector position = new PVector(m.getX(), m.getY());
+        position.rotate(-getRotation());
+        position.add(new PVector(getX(), getY()));
+        m.setPosition(position.x, position.y);
+        m.setRotation(getRotation());
+        m.setVelocity(getVelocityX(), getVelocityY());
+        m.setAngularVelocity(getAngularVelocity());
+        
+        looseMods.add(m);
+      }
+    }
+    
+    println(looseMods);
+    return looseMods;
+  }
+  
+  
   
   void drawGrid() {
     for (PVector pos: grid.openPositions) {
